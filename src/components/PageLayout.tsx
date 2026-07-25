@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { Suspense } from "react"
 import Header from "./Header"
 import Footer from "./Footer"
 import { cn } from "@/lib/utils"
@@ -40,14 +40,16 @@ export default function PageLayout({
 }: PageLayoutProps) {
   return (
     <div className={cn("min-h-screen bg-background text-foreground flex flex-col font-sans antialiased relative w-full", containerClassName)}>
-      <Header 
-        title={title} 
-        badge={badge} 
-        showSearch={showSearch} 
-        searchPlaceholder={searchPlaceholder} 
-        onSearchChange={onSearchChange} 
-        actions={headerActions} 
-      />
+      <Suspense fallback={<div className="h-16 bg-[#0b1326]/80 border-b border-border/40 w-full" />}>
+        <Header 
+          title={title} 
+          badge={badge} 
+          showSearch={showSearch} 
+          searchPlaceholder={searchPlaceholder} 
+          onSearchChange={onSearchChange} 
+          actions={headerActions} 
+        />
+      </Suspense>
       <main className={cn("p-6 md:p-8 space-y-6 max-w-[1600px] w-full mx-auto flex-grow", className)}>
         {children}
       </main>

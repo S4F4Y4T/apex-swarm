@@ -1,34 +1,34 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, Suspense } from "react"
 import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import PageLayout from "@/components/PageLayout"
 import { 
-  Search, 
   Grid, 
   List, 
   AlertTriangle, 
-  RefreshCw, 
-  Plus, 
-  PlusCircle, 
   MoreVertical, 
-  CheckCircle2, 
-  FolderOpen, 
   Cpu, 
-  Layers, 
-  Bot, 
-  Sparkles,
-  ArrowRight,
-  Shield,
-  HelpCircle,
-  FolderOpen as FolderIcon
+  PlusCircle, 
+  ArrowRight
 } from "lucide-react"
 
 import { projectsData } from "@/lib/projects"
 
-export default function ProjectsExplorer() {
-  const [viewType, setViewType] = useState<"card" | "table">("card")
+function ProjectsExplorerContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState("")
+
+  const selectedProjectId = searchParams?.get("projectId") || "jsrm_erp"
+  const viewType = (searchParams?.get("view") || "card") as "card" | "table"
+
+  const setViewType = (view: "card" | "table") => {
+    const params = new URLSearchParams(searchParams?.toString() || "")
+    params.set("view", view)
+    router.push(`/projects?${params.toString()}`)
+  }
 
   const filteredProjects = projectsData.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -58,7 +58,7 @@ export default function ProjectsExplorer() {
 
       <div className="h-6 w-[1px] bg-border/40 hidden sm:block"></div>
 
-      <Link href="/workspace?tab=chat">
+      <Link href={`/workspace?tab=chat&projectId=${selectedProjectId}`}>
         <button className="font-mono text-xs text-secondary-container flex items-center gap-1.5 px-3 py-1.5 bg-secondary-container/10 hover:bg-secondary-container/20 rounded border border-secondary-container/30 transition-all">
           <AlertTriangle className="size-3.5 fill-secondary-container" />
           <span className="font-bold">HITL ALERTS (2)</span>
@@ -92,16 +92,36 @@ export default function ProjectsExplorer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((proj) => {
             const isJSRM = proj.id === "jsrm_erp"
+            const isSelected = proj.id === selectedProjectId
+            
+            // Build the card destination link, preserving view type and other parameters
+            const cardHref = proj.href ? (proj.href.includes("?") ? `${proj.href}&view=${viewType}` : `${proj.href}?view=${viewType}`) : undefined;
+
             const CardWrapper = ({ children }: { children: React.ReactNode }) => {
-              if (proj.href) {
-                return <Link href={proj.href} className="block group">{children}</Link>
+              if (cardHref) {
+                return <Link href={cardHref} className="block group">{children}</Link>
               }
               return <div className="group">{children}</div>
             }
 
+            const borderClass = isSelected
+              ? "border-primary bg-primary/5 ring-1 ring-primary/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+              : proj.statusType === "error"
+                ? "border-destructive/40 hover:border-destructive/60 bg-surface-container-low/40"
+                : proj.statusType === "active"
+                  ? "border-border/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 active-glow bg-surface-container-low/40"
+                  : "border-border/20 opacity-80 hover:opacity-100 bg-surface-container-low/40"
+
             return (
               <CardWrapper key={proj.id}>
-                <div className={`bg-surface-container-low/40 border backdrop-blur-md p-6 rounded-xl flex flex-col justify-between min-h-[380px] transition-all duration-300 relative ${proj.statusType === "error" ? "border-destructive/40 hover:border-destructive/60" : proj.statusType === "active" ? "border-border/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 active-glow" : "border-border/20 opacity-80 hover:opacity-100"} hover:scale-[1.01]`}>
+                <div className={`backdrop-blur-md p-6 rounded-xl flex flex-col justify-between min-h-[380px] transition-all duration-300 relative hover:scale-[1.01] ${borderClass}`}>
+                  {/* Selected Indicator Badge */}
+                  {isSelected && (
+                    <div className="absolute -top-2.5 right-4 bg-primary text-background text-[9px] font-mono font-black uppercase px-2 py-0.5 rounded border border-primary/20 tracking-wider">
+                      Active Context
+                    </div>
+                  )}
+
                   <div>
                     {/* Path & Header */}
                     <div className="flex justify-between items-center mb-4">
@@ -251,59 +271,88 @@ export default function ProjectsExplorer() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/10 text-zinc-300">
-                {filteredProjects.map((proj) => (
-                  <tr key={proj.id} className="hover:bg-surface-container/20 transition-colors">
-                    <td className="p-4 text-zinc-400 font-light">{proj.path}</td>
-                    <td className="p-4 font-sans font-bold text-white text-sm">{proj.name}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        proj.statusType === "active" 
-                          ? "bg-primary/10 text-primary border border-primary/20" 
-                          : proj.statusType === "paused"
-                          ? "bg-secondary-container/10 text-secondary-container border border-secondary-container/20"
-                          : proj.statusType === "error"
-                          ? "bg-destructive/10 text-destructive border border-destructive/20 animate-pulse"
-                          : "bg-zinc-800 text-zinc-400 border border-zinc-700"
-                      }`}>
-                        {proj.status}
-                      </span>
-                    </td>
-                    <td className="p-4 flex items-center gap-2">
-                      <span>{proj.agentIcon}</span>
-                      <span className="font-sans font-medium">{proj.agentName}</span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2 w-32">
-                        <div className="w-full h-1 bg-surface-container rounded-full overflow-hidden">
-                          <div className="h-full bg-primary" style={{ width: `${(proj.progress / proj.maxProgress) * 100}%` }}></div>
+                {filteredProjects.map((proj) => {
+                  const isSelected = proj.id === selectedProjectId
+                  const rowHref = proj.href ? (proj.href.includes("?") ? `${proj.href}&view=${viewType}` : `${proj.href}?view=${viewType}`) : undefined;
+                  
+                  return (
+                    <tr 
+                      key={proj.id} 
+                      className={`transition-colors border-l-2 ${
+                        isSelected 
+                          ? "bg-primary/5 border-l-primary hover:bg-primary/10" 
+                          : "border-l-transparent hover:bg-surface-container/20"
+                      }`}
+                    >
+                      <td className="p-4 text-zinc-400 font-light">{proj.path}</td>
+                      <td className="p-4 font-sans font-bold text-white text-sm">
+                        <div className="flex items-center gap-2">
+                          <span>{proj.name}</span>
+                          {isSelected && (
+                            <span className="text-[9px] font-mono bg-primary/20 text-primary border border-primary/30 px-1.5 py-0.5 rounded scale-90">
+                              ACTIVE
+                            </span>
+                          )}
                         </div>
-                        <span className="shrink-0">{proj.progress}/{proj.maxProgress}</span>
-                      </div>
-                    </td>
-                    <td className="p-4 text-right text-primary font-bold">{proj.burnRate}</td>
-                    <td className="p-4 text-right">
-                      {proj.href ? (
-                        <Link href={proj.href}>
-                          <button className="text-primary font-bold hover:underline flex items-center gap-1 justify-end ml-auto">
-                            <span>Enter</span>
-                            <ArrowRight className="size-3" />
+                      </td>
+                      <td className="p-4">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          proj.statusType === "active" 
+                            ? "bg-primary/10 text-primary border border-primary/20" 
+                            : proj.statusType === "paused"
+                            ? "bg-secondary-container/10 text-secondary-container border border-secondary-container/20"
+                            : proj.statusType === "error"
+                            ? "bg-destructive/10 text-destructive border border-destructive/20 animate-pulse"
+                            : "bg-zinc-800 text-zinc-400 border border-zinc-700"
+                        }`}>
+                          {proj.status}
+                        </span>
+                      </td>
+                      <td className="p-4 flex items-center gap-2">
+                        <span>{proj.agentIcon}</span>
+                        <span className="font-sans font-medium">{proj.agentName}</span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2 w-32">
+                          <div className="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+                            <div className="h-full bg-primary" style={{ width: `${(proj.progress / proj.maxProgress) * 100}%` }}></div>
+                          </div>
+                          <span className="shrink-0">{proj.progress}/{proj.maxProgress}</span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-right text-primary font-bold">{proj.burnRate}</td>
+                      <td className="p-4 text-right">
+                        {rowHref ? (
+                          <Link href={rowHref}>
+                            <button className="text-primary font-bold hover:underline flex items-center gap-1 justify-end ml-auto">
+                              <span>Enter</span>
+                              <ArrowRight className="size-3" />
+                            </button>
+                          </Link>
+                        ) : proj.alert ? (
+                          <button className="px-2 py-1 bg-secondary text-background font-bold rounded text-[9px] hover:brightness-110">
+                            REVIEW
                           </button>
-                        </Link>
-                      ) : proj.alert ? (
-                        <button className="px-2 py-1 bg-secondary text-background font-bold rounded text-[9px] hover:brightness-110">
-                          REVIEW
-                        </button>
-                      ) : (
-                        <span className="text-zinc-600">--</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        ) : (
+                          <span className="text-zinc-600">--</span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         </div>
       )}
     </PageLayout>
+  )
+}
+
+export default function ProjectsExplorer() {
+  return (
+    <Suspense fallback={<div className="p-6 md:p-8 font-mono text-xs text-zinc-500 animate-pulse">Loading modules index...</div>}>
+      <ProjectsExplorerContent />
+    </Suspense>
   )
 }

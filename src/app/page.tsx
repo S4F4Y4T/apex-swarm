@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { 
   Activity, 
   AlertTriangle, 
@@ -17,9 +18,9 @@ import {
 import PageLayout from "@/components/PageLayout"
 import { projectsData } from "@/lib/projects"
 
-export default function Dashboard() {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>("jsrm_erp")
-  const [showProjectDropdown, setShowProjectDropdown] = useState<boolean>(false)
+function DashboardContent() {
+  const searchParams = useSearchParams()
+  const selectedProjectId = searchParams?.get("projectId") || "jsrm_erp"
   const [cpuUsage, setCpuUsage] = useState<number>(64)
   const [memoryUsage, setMemoryUsage] = useState<number>(72)
   
@@ -146,50 +147,8 @@ export default function Dashboard() {
     </div>
   )
 
-  const projectTitleDropdown = (
-    <div className="relative">
-      <button 
-        onClick={() => setShowProjectDropdown(!showProjectDropdown)}
-        className="flex items-center gap-2 text-left font-black text-white uppercase tracking-widest hover:text-primary transition-colors text-lg"
-      >
-        <span>{currentProject.name} Dashboard</span>
-        <ChevronDown className="size-4 shrink-0" />
-      </button>
-      
-      {showProjectDropdown && (
-        <div className="absolute left-0 mt-2 w-72 bg-[#0b1326] border border-border/40 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-md">
-          <div className="p-3 border-b border-border/10">
-            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Select Active Hub</span>
-          </div>
-          <div className="py-1">
-            {projectsData.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => {
-                  setSelectedProjectId(p.id)
-                  setShowProjectDropdown(false)
-                }}
-                className={`w-full text-left px-4 py-3 hover:bg-surface-bright/20 flex items-center justify-between transition-colors border-l-2 ${
-                  p.id === selectedProjectId ? "bg-primary/5 text-primary border-l-primary" : "text-muted-foreground border-l-transparent"
-                }`}
-              >
-                <div>
-                  <p className="font-semibold text-sm font-sans">{p.name}</p>
-                  <p className="text-[9px] font-mono text-zinc-500 truncate max-w-[200px]">{p.description}</p>
-                </div>
-                <span className="text-lg">{p.agentIcon}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-
   return (
     <PageLayout
-      title={projectTitleDropdown}
-      badge={{ text: currentProject.status, variant: currentProject.statusType === "error" ? "destructive" : currentProject.statusType === "paused" ? "secondary" : "primary" }}
       headerActions={headerActions}
       className="space-y-8 flex-grow"
     >
@@ -437,5 +396,13 @@ export default function Dashboard() {
         </section>
       </div>
     </PageLayout>
+  )
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground font-mono">LOADING SYSTEM...</div>}>
+      <DashboardContent />
+    </Suspense>
   )
 }

@@ -2,57 +2,65 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import { 
   LayoutDashboard, 
   DollarSign, 
   Settings, 
-  FileText, 
-  HelpCircle,
   FolderOpen,
   User,
-  Plus
+  Shield
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const [searchQuery, setSearchQuery] = useState("")
+  const searchParams = useSearchParams()
+  const projectId = searchParams?.get("projectId") || "jsrm_erp"
+
+  const [designation, setDesignation] = useState("Chief Architect")
+  const [operatorId, setOperatorId] = useState("Operator #04")
+  const [avatarUrl, setAvatarUrl] = useState("https://lh3.googleusercontent.com/aida-public/AB6AXuAAISRsAirh2nXzOCeXwvsCE2p4N49oiN0aiSTQxDl4GUB9Wzn29qmg9cJ6DyklB9YPrA9FeG7LUqg8eLbzp6iOMhLiTFaqV0MGSHvX1Zh4BXhIcJ4bfKA9bPYpiSDaDCo73ERNfWkKGLJTO5cOXc26taaumBf0dnsBCuGDEm1fEfmJ8dSZLZNsOWye2NcgFRspAOafmIWZj6_Dw2XiiN2M070DHE9lojwnvdHt8T00RpKGtZR8t2xx850QP_FWLsV_KkymHdhXemk")
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setSearchQuery(window.location.search)
-      
-      const handleLocationChange = () => {
-        setSearchQuery(window.location.search)
-      }
-      window.addEventListener("popstate", handleLocationChange)
-      return () => window.removeEventListener("popstate", handleLocationChange)
+    const loadProfile = () => {
+      const storedDesignation = localStorage.getItem("operator_designation")
+      const storedOperatorId = localStorage.getItem("operator_id")
+      const storedAvatar = localStorage.getItem("operator_avatar")
+      if (storedDesignation) setDesignation(storedDesignation)
+      if (storedOperatorId) setOperatorId(storedOperatorId)
+      if (storedAvatar) setAvatarUrl(storedAvatar)
     }
-  }, [pathname])
+
+    loadProfile()
+    window.addEventListener("operator-profile-update", loadProfile)
+    return () => {
+      window.removeEventListener("operator-profile-update", loadProfile)
+    }
+  }, [])
 
   const navItems = [
     {
       label: "Dashboard",
-      href: "/",
+      href: `/?projectId=${projectId}`,
       icon: LayoutDashboard,
       isActive: pathname === "/"
     },
     {
       label: "Projects",
-      href: "/projects",
+      href: `/projects?projectId=${projectId}`,
       icon: FolderOpen,
       isActive: pathname === "/projects" || pathname.startsWith("/workspace")
     },
     {
       label: "Billing",
-      href: "/billing",
+      href: `/billing?projectId=${projectId}`,
       icon: DollarSign,
       isActive: pathname === "/billing"
     },
     {
       label: "Settings",
-      href: "/settings",
+      href: `/settings?projectId=${projectId}`,
       icon: Settings,
       isActive: pathname === "/settings"
     }
@@ -92,22 +100,38 @@ export default function Sidebar() {
           <img 
             alt="User Workspace Profile" 
             className="w-8 h-8 rounded-full border border-primary/20 object-cover" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAISRsAirh2nXzOCeXwvsCE2p4N49oiN0aiSTQxDl4GUB9Wzn29qmg9cJ6DyklB9YPrA9FeG7LUqg8eLbzp6iOMhLiTFaqV0MGSHvX1Zh4BXhIcJ4bfKA9bPYpiSDaDCo73ERNfWkKGLJTO5cOXc26taaumBf0dnsBCuGDEm1fEfmJ8dSZLZNsOWye2NcgFRspAOafmIWZj6_Dw2XiiN2M070DHE9lojwnvdHt8T00RpKGtZR8t2xx850QP_FWLsV_KkymHdhXemk"
+            src={avatarUrl}
           />
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-xs text-foreground truncate">Chief Architect</p>
-            <p className="text-[10px] text-zinc-500 font-mono">Operator #04</p>
+            <p className="font-semibold text-xs text-foreground truncate">{designation}</p>
+            <p className="text-[10px] text-zinc-500 font-mono">{operatorId}</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-1">
-          <Link href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary transition-colors">
-            <FileText className="size-3.5" />
-            <span>Documentation</span>
+          <Link 
+            href={`/settings?tab=profile&projectId=${projectId}`} 
+            className={cn(
+              "flex items-center gap-3 px-4 py-2 rounded-lg text-xs transition-colors",
+              pathname === "/settings" && searchParams?.get("tab") === "profile"
+                ? "text-primary font-bold bg-primary/10"
+                : "text-muted-foreground hover:text-primary hover:bg-surface-bright/10"
+            )}
+          >
+            <User className="size-3.5" />
+            <span>Profile Settings</span>
           </Link>
-          <Link href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary transition-colors">
-            <HelpCircle className="size-3.5" />
-            <span>Support</span>
+          <Link 
+            href={`/settings?tab=security&projectId=${projectId}`} 
+            className={cn(
+              "flex items-center gap-3 px-4 py-2 rounded-lg text-xs transition-colors",
+              pathname === "/settings" && searchParams?.get("tab") === "security"
+                ? "text-primary font-bold bg-primary/10"
+                : "text-muted-foreground hover:text-primary hover:bg-surface-bright/10"
+            )}
+          >
+            <Shield className="size-3.5" />
+            <span>Security Settings</span>
           </Link>
         </div>
       </div>

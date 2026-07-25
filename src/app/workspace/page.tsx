@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, Suspense } from "react"
 import { 
   Play, 
   Square, 
@@ -83,54 +83,37 @@ interface KanbanTask {
   title: string
   agent: string
   agentAvatar: string
-  status: "backlog" | "analysis" | "progress" | "verification" | "done"
+  status: "backlog" | "progress" | "auditing" | "verification" | "done"
   priority: "low" | "medium" | "high" | "critical"
   progress: number
 }
 
-export default function Dashboard() {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>("jsrm_erp")
-  const [showProjectDropdown, setShowProjectDropdown] = useState<boolean>(false)
+interface HitlTicket {
+  id: string
+  taskId: string
+  title: string
+  agent: string
+  agentAvatar: string
+  description: string
+  status: "pending" | "approved" | "rejected"
+  timestamp: string
+}
+
+import { useRouter, useSearchParams } from "next/navigation"
+
+function WorkspaceContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const selectedProjectId = searchParams?.get("projectId") || "jsrm_erp"
   const currentProject = projectsData.find(p => p.id === selectedProjectId) || projectsData[0]
 
   // Active tab state
-  const [activeTab, setActiveTab] = useState<string>("kanban")
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateParams = () => {
-        const params = new URLSearchParams(window.location.search)
-        const tab = params.get("tab")
-        if (tab && ["kanban", "logs", "chat", "settings"].includes(tab)) {
-          setActiveTab(tab)
-        }
-        const pid = params.get("projectId")
-        if (pid) {
-          setSelectedProjectId(pid)
-        }
-      }
-      updateParams()
-
-      const originalPush = window.history.pushState
-      window.history.pushState = function (...args) {
-        originalPush.apply(window.history, args)
-        updateParams()
-      }
-      
-      const originalReplace = window.history.replaceState
-      window.history.replaceState = function (...args) {
-        originalReplace.apply(window.history, args)
-        updateParams()
-      }
-
-      window.addEventListener("popstate", updateParams)
-      return () => {
-        window.history.pushState = originalPush
-        window.history.replaceState = originalReplace
-        window.removeEventListener("popstate", updateParams)
-      }
-    }
-  }, [])
+  const activeTab = searchParams?.get("tab") || "kanban"
+  const setActiveTab = (tab: string) => {
+    const params = new URLSearchParams(searchParams?.toString() || "")
+    params.set("tab", tab)
+    router.push(`/workspace?${params.toString()}`)
+  }
 
   // System stats state
   const [cpuUsage, setCpuUsage] = useState<number>(42)
@@ -139,11 +122,31 @@ export default function Dashboard() {
   const [latency, setLatency] = useState<number>(124)
   const [totalCost, setTotalCost] = useState<number>(142.50)
 
-  // HITL (Human-in-the-loop) Approval State
-  const [hitlPending, setHitlPending] = useState<boolean>(true)
-  const [hitlStatus, setHitlStatus] = useState<"pending" | "approved" | "rejected">("pending")
+  // HITL (Human-in-the-loop) Approval States
+  const [hitlTickets, setHitlTickets] = useState<HitlTicket[]>([
+    {
+      id: "hitl-1",
+      taskId: "t1",
+      title: "Sync Staging Database Schema",
+      agent: "Cattlesync Agent",
+      agentAvatar: "🐮",
+      description: "Automated schema diff matches target staging. Operator approval is required to apply the DDL migrations.",
+      status: "pending",
+      timestamp: "15:07:12"
+    },
+    {
+      id: "hitl-2",
+      taskId: "t3",
+      title: "Deploy ERP core module API",
+      agent: "ERP Deployer",
+      agentAvatar: "🚀",
+      description: "Automated test validation has passed. Production deployment authorization is requested for the ERP core module.",
+      status: "pending",
+      timestamp: "15:07:30"
+    }
+  ])
 
-  // Kanban Tasks
+  // Kanban Tasks (5-phase SDLC matching)
   const [tasks, setTasks] = useState<KanbanTask[]>([
     {
       id: "t1",
@@ -168,16 +171,16 @@ export default function Dashboard() {
       title: "Deploy ERP Dashboard core module API",
       agent: "ERP Deployer",
       agentAvatar: "🚀",
-      status: "progress",
+      status: "auditing",
       priority: "critical",
-      progress: 40
+      progress: 80
     },
     {
       id: "t4",
       title: "Refactor telemetry pipeline hooks",
       agent: "Telemetry Agent",
       agentAvatar: "📈",
-      status: "analysis",
+      status: "progress",
       priority: "low",
       progress: 15
     },
@@ -227,6 +230,35 @@ export default function Dashboard() {
   const [docsGenerationEnforced, setDocsGenerationEnforced] = useState<boolean>(true)
   const [ddasEnabled, setDdasEnabled] = useState<boolean>(false)
   const [isSavingSettings, setIsSavingSettings] = useState<boolean>(false)
+
+  // Pre-Flight Model-to-Role Mapping
+  const [roleMappings, setRoleMappings] = useState({
+    orchestrator: "anthropic/claude-3-5-sonnet",
+    coder: "anthropic/claude-3-5-sonnet",
+    auditor: "google/gemini-1.5-pro",
+    deployer: "openai/gpt-4o-mini",
+  })
+
+  // Skills / MCP Tools
+  const [mcpSkills, setMcpSkills] = useState([
+    { id: "term", name: "terminal-executor", desc: "Execute safe CLI actions in sandbox environment", active: true },
+    { id: "fs", name: "filesystem-manager", desc: "Write, edit, and read files in work directory", active: true },
+    { id: "web", name: "web-searcher", desc: "Fetch up-to-date documentation and packages", active: true },
+    { id: "git", name: "git-integrator", desc: "Perform commits, branch creation and merge staging", active: true },
+    { id: "browser", name: "playwright-browser", desc: "Simulate Chrome page loads & DOM validations", active: false }
+  ])
+
+  useEffect(() => {
+    const loadSettings = () => {
+      const storedStrictness = localStorage.getItem("sdlc_strictness") || "4"
+      setStrictnessLevel(Number(storedStrictness))
+    }
+    loadSettings()
+    window.addEventListener("apex-settings-update", loadSettings)
+    return () => {
+      window.removeEventListener("apex-settings-update", loadSettings)
+    }
+  }, [])
 
   // Sync settings when project changes
   useEffect(() => {
@@ -312,18 +344,22 @@ export default function Dashboard() {
     return () => clearInterval(interval)
   }, [])
 
-  // Handle human-in-the-loop approval
-  const handleApproval = (approved: boolean) => {
+  // Handle human-in-the-loop ticket approval/rejection
+  const handleTicketApproval = (ticketId: string, approved: boolean) => {
+    const ticket = hitlTickets.find(t => t.id === ticketId)
+    if (!ticket) return
+
     const now = new Date()
     const timestamp = now.toTimeString().split(' ')[0]
 
+    setHitlTickets(prev =>
+      prev.map(t => t.id === ticketId ? { ...t, status: approved ? "approved" : "rejected" } : t)
+    )
+
     if (approved) {
-      setHitlStatus("approved")
-      setHitlPending(false)
-      
-      // Update Kanban task status for ERP Deployer
-      setTasks(prev => 
-        prev.map(t => t.id === "t3" ? { ...t, status: "done", progress: 100 } : t)
+      // Update Kanban task status to done
+      setTasks(prev =>
+        prev.map(t => t.id === ticket.taskId ? { ...t, status: "done", progress: 100 } : t)
       )
 
       // Add to logs
@@ -333,8 +369,8 @@ export default function Dashboard() {
           id: Math.random().toString(),
           timestamp,
           level: "success",
-          source: "ERP Deployer",
-          message: "HITL APPROVED: Deployment of ERP core module API initiated. Status: Deployed."
+          source: ticket.agent,
+          message: `HITL APPROVED: ${ticket.title} initiated. Status: Resolved.`
         }
       ])
 
@@ -344,41 +380,41 @@ export default function Dashboard() {
         {
           id: Math.random().toString(),
           sender: "agent",
-          agentName: "ERP Deployer",
-          avatar: "🚀",
-          message: "Thank you for the approval! The ERP Dashboard core module has been compiled and deployed successfully to production. Pipeline health: 100%.",
+          agentName: ticket.agent,
+          avatar: ticket.agentAvatar,
+          message: `Thank you for the approval! ${ticket.title} has been verified and executed successfully. Pipeline health: 100%.`,
           timestamp
         }
       ])
 
       setTotalCost(prev => prev + 0.15)
     } else {
-      setHitlStatus("rejected")
-      setHitlPending(false)
-
-      setTasks(prev => 
-        prev.map(t => t.id === "t3" ? { ...t, progress: 40, priority: "high" } : t)
+      // Update Kanban task status to In-Progress with lower progress
+      setTasks(prev =>
+        prev.map(t => t.id === ticket.taskId ? { ...t, status: "progress", progress: 40, priority: "high" } : t)
       )
 
+      // Add to logs
       setLogs(prev => [
         ...prev,
         {
           id: Math.random().toString(),
           timestamp,
           level: "error",
-          source: "ERP Deployer",
-          message: "HITL REJECTED: Deployment of ERP core module API aborted by operator request."
+          source: ticket.agent,
+          message: `HITL REJECTED: ${ticket.title} aborted by operator request.`
         }
       ])
 
+      // Add agent chat message
       setChatMessages(prev => [
         ...prev,
         {
           id: Math.random().toString(),
           sender: "agent",
-          agentName: "ERP Deployer",
-          avatar: "🚀",
-          message: "Understood. The production deployment has been aborted. I have reverted the pipeline state to 'Pending Manual Intervention' and flagged the task priority.",
+          agentName: ticket.agent,
+          avatar: ticket.agentAvatar,
+          message: `Understood. The action for '${ticket.title}' has been rejected. I have reverted the task back to In-Progress for code refinement.`,
           timestamp
         }
       ])
@@ -442,7 +478,9 @@ export default function Dashboard() {
           }
         ])
       } else if (currentInput.includes("status") || currentInput.includes("health")) {
-        reply = `The factory systems are currently healthy. Current CPU usage is ${cpuUsage}%, Memory load is ${memoryUsage}%. The ERP deployment task was ${hitlStatus === "approved" ? "successfully deployed" : "halted"}.`
+        const erpTicket = hitlTickets.find(t => t.id === "t1")
+        const erpStatusStr = erpTicket?.status === "approved" ? "successfully approved" : erpTicket?.status === "rejected" ? "rejected" : "pending operator approval"
+        reply = `The factory systems are currently healthy. Current CPU usage is ${cpuUsage}%, Memory load is ${memoryUsage}%. The ERP deployment task is ${erpStatusStr}.`
       } else if (currentInput.includes("settings") || currentInput.includes("rules") || currentInput.includes("scope")) {
         reply = `Current Factory Settings: Entity Name: "${companyName}", SDLC Strictness: Level ${strictnessLevel}. Unit tests are ${unitTestsEnforced ? "ENFORCED" : "OPTIONAL"}. Docs generation is ${docsGenerationEnforced ? "ENFORCED" : "OPTIONAL"}.`
       } else if (currentInput.includes("log") || currentInput.includes("error")) {
@@ -478,56 +516,8 @@ export default function Dashboard() {
     return tasks.filter(task => task.status === status)
   }
 
-  const projectTitleDropdown = (
-    <div className="relative">
-      <button 
-        onClick={() => setShowProjectDropdown(!showProjectDropdown)}
-        className="flex items-center gap-2 text-left font-black text-white uppercase tracking-widest hover:text-primary transition-colors text-lg"
-      >
-        <span>{currentProject.name} Workspace</span>
-        <ChevronDown className="size-4 shrink-0" />
-      </button>
-      
-      {showProjectDropdown && (
-        <div className="absolute left-0 mt-2 w-72 bg-[#0b1326] border border-border/40 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-md">
-          <div className="p-3 border-b border-border/10">
-            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Select Workspace</span>
-          </div>
-          <div className="py-1">
-            {projectsData.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => {
-                  setSelectedProjectId(p.id)
-                  setShowProjectDropdown(false)
-                  // Update URL parameter
-                  if (typeof window !== "undefined") {
-                    const params = new URLSearchParams(window.location.search)
-                    params.set("projectId", p.id)
-                    window.history.pushState({}, "", `${window.location.pathname}?${params.toString()}`)
-                  }
-                }}
-                className={`w-full text-left px-4 py-3 hover:bg-surface-bright/20 flex items-center justify-between transition-colors border-l-2 ${
-                  p.id === selectedProjectId ? "bg-primary/5 text-primary border-l-primary" : "text-muted-foreground border-l-transparent"
-                }`}
-              >
-                <div>
-                  <p className="font-semibold text-sm font-sans">{p.name}</p>
-                  <p className="text-[9px] font-mono text-zinc-500 truncate max-w-[200px]">{p.description}</p>
-                </div>
-                <span className="text-lg">{p.agentIcon}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-
   return (
     <PageLayout
-      title={projectTitleDropdown}
-      badge={{ text: currentProject.status, variant: currentProject.statusType === "error" ? "destructive" : currentProject.statusType === "paused" ? "secondary" : "primary" }}
       className="max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 flex-grow"
       headerActions={
         <div className="flex items-center gap-6 text-xs font-mono text-muted-foreground">
@@ -552,58 +542,77 @@ export default function Dashboard() {
         {/* Left Sidebar: Telemetry & METRICS (1 Column wide on desktop) */}
         <div className="lg:col-span-1 flex flex-col gap-6">
           
-          {/* HITL Human Intervention Required Alert */}
-          {hitlPending && (
-            <Card className="border-secondary/40 bg-secondary/5 relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-secondary"></div>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-secondary flex items-center gap-2 text-sm font-semibold">
+          {/* HITL Human-in-the-Loop Interventions */}
+          <Card className="border-secondary/20 bg-secondary/5 relative overflow-hidden flex flex-col">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-secondary animate-pulse"></div>
+            <CardHeader className="pb-3 border-b border-secondary/15">
+              <CardTitle className="text-secondary flex items-center justify-between text-xs font-mono uppercase tracking-wider font-bold">
+                <span className="flex items-center gap-1.5">
                   <AlertTriangle className="size-4 shrink-0" />
-                  Manual Approval Pending
-                </CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">
-                  ERP Deployer / production build
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-4">
-                <p className="text-xs text-on-surface-variant leading-relaxed">
-                  The automated test validation has passed. Production deployment authorization is requested for the ERP core module.
-                </p>
-              </CardContent>
-              <CardFooter className="flex gap-2 justify-end pt-3 bg-secondary/10 border-t border-secondary/20">
-                <Button 
-                  size="xs" 
-                  variant="destructive" 
-                  onClick={() => handleApproval(false)}
-                >
-                  <X className="size-3" />
-                  Reject
-                </Button>
-                <Button 
-                  size="xs" 
-                  className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                  onClick={() => handleApproval(true)}
-                >
-                  <Check className="size-3" />
-                  Approve
-                </Button>
-              </CardFooter>
-            </Card>
-          )}
-
-          {!hitlPending && (
-            <Card className={`border-t-4 ${hitlStatus === "approved" ? "border-t-tertiary bg-tertiary/5" : "border-t-destructive bg-destructive/5"}`}>
-              <CardHeader className="pb-2">
-                <CardTitle className={`flex items-center gap-2 text-sm font-semibold ${hitlStatus === "approved" ? "text-tertiary" : "text-destructive"}`}>
-                  {hitlStatus === "approved" ? <CheckCircle2 className="size-4" /> : <XCircle className="size-4" />}
-                  HITL Decided
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pb-3 text-xs text-muted-foreground">
-                Action on ERP deployment was <strong>{hitlStatus.toUpperCase()}</strong>. System registers updated pipeline nodes.
-              </CardContent>
-            </Card>
-          )}
+                  HITL Intervention Queue
+                </span>
+                <span className="bg-secondary/20 text-secondary text-[10px] px-1.5 py-0.5 rounded-full font-sans font-bold">
+                  {hitlTickets.filter(t => t.status === "pending").length} Pending
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 divide-y divide-secondary/10 max-h-[400px] overflow-y-auto">
+              {hitlTickets.map(ticket => {
+                const isPending = ticket.status === "pending"
+                return (
+                  <div key={ticket.id} className="p-4 flex flex-col gap-3 transition-colors hover:bg-secondary/10">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">{ticket.agent}</span>
+                        <h4 className="text-xs font-bold text-white mt-0.5">{ticket.title}</h4>
+                      </div>
+                      <span className="text-sm shrink-0 select-none bg-[#0a0f1d] size-6 rounded-full flex items-center justify-center border border-border/10">
+                        {ticket.agentAvatar}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-zinc-300 leading-relaxed bg-[#060b13]/50 p-2 rounded border border-border/5">
+                      {ticket.description}
+                    </p>
+                    
+                    {isPending ? (
+                      <div className="flex gap-2 justify-end pt-1">
+                        <Button 
+                          size="xs" 
+                          variant="destructive" 
+                          onClick={() => handleTicketApproval(ticket.id, false)}
+                          className="font-mono text-[9px] h-7 px-2.5"
+                        >
+                          <X className="size-3" />
+                          REJECT
+                        </Button>
+                        <Button 
+                          size="xs" 
+                          onClick={() => handleTicketApproval(ticket.id, true)}
+                          className="bg-secondary text-secondary-foreground hover:bg-secondary/80 font-mono text-[9px] h-7 px-2.5"
+                        >
+                          <Check className="size-3" />
+                          APPROVE
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 text-[10px] font-mono justify-end">
+                        <span className="text-zinc-500">DECISION:</span>
+                        <span className={`font-bold uppercase ${ticket.status === "approved" ? "text-tertiary" : "text-destructive"}`}>
+                          {ticket.status}
+                        </span>
+                        {ticket.status === "approved" ? <Check className="size-3 text-tertiary" /> : <X className="size-3 text-destructive" />}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+              {hitlTickets.length === 0 && (
+                <div className="p-8 text-center text-xs text-muted-foreground">
+                  No HITL tickets configured.
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Live Telemetry Card */}
           <Card>
@@ -674,9 +683,27 @@ export default function Dashboard() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">ERP Deployment:</span>
-                <Badge className={hitlStatus === "approved" ? "bg-tertiary/10 text-tertiary border-tertiary/20" : "bg-secondary/10 text-secondary border-secondary/20"}>
-                  {hitlStatus === "approved" ? "Deployed" : "Suspended"}
-                </Badge>
+                {(() => {
+                  const erpTicket = hitlTickets.find(t => t.id === "t1")
+                  const isApproved = erpTicket?.status === "approved"
+                  const isRejected = erpTicket?.status === "rejected"
+                  
+                  let badgeColor = "bg-secondary/10 text-secondary border-secondary/20 font-bold"
+                  let badgeText = "Suspended"
+                  if (isApproved) {
+                    badgeColor = "bg-tertiary/10 text-tertiary border-tertiary/20 font-bold"
+                    badgeText = "Deployed"
+                  } else if (isRejected) {
+                    badgeColor = "bg-destructive/10 text-destructive border-destructive/20 font-bold"
+                    badgeText = "Rejected"
+                  }
+                  
+                  return (
+                    <Badge className={badgeColor}>
+                      {badgeText}
+                    </Badge>
+                  )
+                })()}
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">QA Leak Check:</span>
@@ -723,7 +750,7 @@ export default function Dashboard() {
             <TabsContent value="kanban" className="mt-0">
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 
-                {/* Column: Backlog */}
+                {/* Column 1: Backlog */}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between border-b border-border/20 pb-2">
                     <span className="text-xs font-mono font-bold text-muted-foreground uppercase flex items-center gap-1.5">
@@ -763,33 +790,12 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Column: Agent Analysis */}
-                <div className="flex flex-col gap-3">
-                  <div className="border-b border-border/20 pb-2">
-                    <span className="text-xs font-mono font-bold text-primary uppercase flex items-center gap-1.5">
-                      <Circle className="size-3 text-primary fill-primary" />
-                      Analysis ({getTasksByStatus("analysis").length})
-                    </span>
-                  </div>
-                  
-                  <div className="flex flex-col gap-3 min-h-[300px]">
-                    {getTasksByStatus("analysis").map(task => (
-                      <TaskCard key={task.id} task={task} />
-                    ))}
-                    {getTasksByStatus("analysis").length === 0 && (
-                      <div className="text-center py-8 text-xs text-muted-foreground border border-dashed border-border/20 rounded-lg">
-                        Empty column
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Column: In-Progress */}
+                {/* Column 2: In-Progress */}
                 <div className="flex flex-col gap-3">
                   <div className="border-b border-border/20 pb-2">
                     <span className="text-xs font-mono font-bold text-secondary uppercase flex items-center gap-1.5">
                       <Circle className="size-3 text-secondary fill-secondary" />
-                      Running ({getTasksByStatus("progress").length})
+                      In-Progress ({getTasksByStatus("progress").length})
                     </span>
                   </div>
                   
@@ -799,13 +805,34 @@ export default function Dashboard() {
                     ))}
                     {getTasksByStatus("progress").length === 0 && (
                       <div className="text-center py-8 text-xs text-muted-foreground border border-dashed border-border/20 rounded-lg">
-                        No running agents
+                        No active tasks
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Column: Verification */}
+                {/* Column 3: Auditing */}
+                <div className="flex flex-col gap-3">
+                  <div className="border-b border-border/20 pb-2">
+                    <span className="text-xs font-mono font-bold text-purple-400 uppercase flex items-center gap-1.5">
+                      <Circle className="size-3 text-purple-400 fill-purple-400" />
+                      Auditing ({getTasksByStatus("auditing").length})
+                    </span>
+                  </div>
+                  
+                  <div className="flex flex-col gap-3 min-h-[300px]">
+                    {getTasksByStatus("auditing").map(task => (
+                      <TaskCard key={task.id} task={task} />
+                    ))}
+                    {getTasksByStatus("auditing").length === 0 && (
+                      <div className="text-center py-8 text-xs text-muted-foreground border border-dashed border-border/20 rounded-lg">
+                        No tasks in audit
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Column 4: Human Verification */}
                 <div className="flex flex-col gap-3">
                   <div className="border-b border-border/20 pb-2">
                     <span className="text-xs font-mono font-bold text-blue-400 uppercase flex items-center gap-1.5">
@@ -826,12 +853,12 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Column: Deployed */}
+                {/* Column 5: Done */}
                 <div className="flex flex-col gap-3">
                   <div className="border-b border-border/20 pb-2">
                     <span className="text-xs font-mono font-bold text-tertiary uppercase flex items-center gap-1.5">
                       <Circle className="size-3 text-tertiary fill-tertiary" />
-                      Deployed ({getTasksByStatus("done").length})
+                      Done ({getTasksByStatus("done").length})
                     </span>
                   </div>
                   
@@ -1163,7 +1190,12 @@ export default function Dashboard() {
                         min="1" 
                         max="5"
                         value={strictnessLevel}
-                        onChange={(e) => setStrictnessLevel(Number(e.target.value))}
+                        onChange={(e) => {
+                          const val = Number(e.target.value)
+                          setStrictnessLevel(val)
+                          localStorage.setItem("sdlc_strictness", String(val))
+                          window.dispatchEvent(new Event("apex-settings-update"))
+                        }}
                         className="w-full accent-primary bg-background/60 rounded-lg h-2 cursor-pointer"
                       />
                       <div className="flex justify-between font-mono text-[9px] text-muted-foreground">
@@ -1216,6 +1248,116 @@ export default function Dashboard() {
 
                     </div>
 
+                  </div>
+
+                  {/* Full-width Divider */}
+                  <div className="col-span-1 md:col-span-2 border-t border-border/10 my-2 pt-4"></div>
+
+                  {/* Pre-Flight Model Mapping Matrix */}
+                  <div className="flex flex-col gap-4 col-span-1">
+                    <div>
+                      <h4 className="text-xs font-mono font-bold text-white flex items-center gap-1.5 uppercase">
+                        <Sliders className="size-4 text-primary" />
+                        Pre-Flight Model-to-Role Mapping
+                      </h4>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        Bind specialized LLM models to distinct agent operational profiles.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 bg-[#070c14]/40 p-4 rounded-lg border border-border/10">
+                      {/* Orchestrator */}
+                      <div className="grid grid-cols-3 items-center gap-2">
+                        <span className="text-[11px] font-mono font-semibold text-zinc-300">Orchestrator:</span>
+                        <select
+                          value={roleMappings.orchestrator}
+                          onChange={(e) => setRoleMappings(prev => ({ ...prev, orchestrator: e.target.value }))}
+                          className="col-span-2 bg-background/50 border border-border/60 rounded-md px-2 py-1 text-[11px] text-white focus:outline-none focus:border-primary cursor-pointer"
+                        >
+                          <option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                          <option value="openai/gpt-4o">GPT-4o</option>
+                          <option value="google/gemini-1.5-pro">Gemini 1.5 Pro</option>
+                        </select>
+                      </div>
+
+                      {/* Coder */}
+                      <div className="grid grid-cols-3 items-center gap-2">
+                        <span className="text-[11px] font-mono font-semibold text-zinc-300">Coder Agent:</span>
+                        <select
+                          value={roleMappings.coder}
+                          onChange={(e) => setRoleMappings(prev => ({ ...prev, coder: e.target.value }))}
+                          className="col-span-2 bg-background/50 border border-border/60 rounded-md px-2 py-1 text-[11px] text-white focus:outline-none focus:border-primary cursor-pointer"
+                        >
+                          <option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                          <option value="openai/gpt-4o">GPT-4o</option>
+                          <option value="google/gemini-1.5-pro">Gemini 1.5 Pro</option>
+                        </select>
+                      </div>
+
+                      {/* QA/Auditor */}
+                      <div className="grid grid-cols-3 items-center gap-2">
+                        <span className="text-[11px] font-mono font-semibold text-zinc-300">QA / Auditor:</span>
+                        <select
+                          value={roleMappings.auditor}
+                          onChange={(e) => setRoleMappings(prev => ({ ...prev, auditor: e.target.value }))}
+                          className="col-span-2 bg-background/50 border border-border/60 rounded-md px-2 py-1 text-[11px] text-white focus:outline-none focus:border-primary cursor-pointer"
+                        >
+                          <option value="google/gemini-1.5-pro">Gemini 1.5 Pro</option>
+                          <option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                          <option value="openai/gpt-4o">GPT-4o</option>
+                        </select>
+                      </div>
+
+                      {/* Deployer */}
+                      <div className="grid grid-cols-3 items-center gap-2">
+                        <span className="text-[11px] font-mono font-semibold text-zinc-300">Deployer Agent:</span>
+                        <select
+                          value={roleMappings.deployer}
+                          onChange={(e) => setRoleMappings(prev => ({ ...prev, deployer: e.target.value }))}
+                          className="col-span-2 bg-background/50 border border-border/60 rounded-md px-2 py-1 text-[11px] text-white focus:outline-none focus:border-primary cursor-pointer"
+                        >
+                          <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                          <option value="anthropic/claude-3-5-haiku">Claude 3.5 Haiku</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skills / MCP Manager */}
+                  <div className="flex flex-col gap-4 col-span-1">
+                    <div>
+                      <h4 className="text-xs font-mono font-bold text-white flex items-center gap-1.5 uppercase">
+                        <Terminal className="size-4 text-secondary" />
+                        Skills & MCP Tool Capabilities
+                      </h4>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        Activate sandbox features and filesystem capabilities for the swarm.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 bg-[#070c14]/40 p-4 rounded-lg border border-border/10 max-h-[190px] overflow-y-auto">
+                      {mcpSkills.map(skill => (
+                        <div key={skill.id} className="flex items-center justify-between gap-3 text-xs">
+                          <div className="flex flex-col">
+                            <span className="font-mono font-bold text-zinc-200">{skill.name}</span>
+                            <span className="text-[9px] text-muted-foreground">{skill.desc}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMcpSkills(prev => prev.map(s => s.id === skill.id ? { ...s, active: !s.active } : s))
+                            }}
+                            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all ${
+                              skill.active 
+                                ? "bg-secondary/20 text-secondary border border-secondary/30" 
+                                : "bg-zinc-800 text-zinc-500 border border-zinc-700"
+                            }`}
+                          >
+                            {skill.active ? "ACTIVE" : "DISABLED"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -1298,5 +1440,13 @@ function TaskCard({ task }: { task: KanbanTask }) {
         </div>
       </div>
     </Card>
+  )
+}
+
+export default function Workspace() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground font-mono">LOADING WORKSPACE...</div>}>
+      <WorkspaceContent />
+    </Suspense>
   )
 }
