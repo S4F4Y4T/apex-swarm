@@ -2,26 +2,24 @@
 
 import React, { useState, useEffect } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { 
-  Bell, 
-  Settings, 
-  Search, 
-  ChevronDown, 
-  Layers, 
-  Check, 
-  AlertTriangle, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  Bell,
+  Settings,
+  Search,
+  ChevronDown,
+  Layers,
+  Check,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
   Info,
   User,
   LogOut,
-  CreditCard,
   BookOpen,
   HelpCircle,
   Shield,
   Cpu,
-  Sliders,
-  DollarSign
+  Sliders
 } from "lucide-react"
 import { projectsData } from "@/lib/projects"
 
@@ -81,17 +79,14 @@ export default function Header({
   }, [])
 
   // Settings State (Mock Interactive)
-  const [infraProfile, setInfraProfile] = useState<"platform" | "byok">("byok")
   const [sdlcStrictness, setSdlcStrictness] = useState<number>(4)
   const [concurrencyLimit, setConcurrencyLimit] = useState<number>(24)
 
   useEffect(() => {
     const loadSettings = () => {
-      const storedProvider = localStorage.getItem("llm_provider") || "byok"
       const storedStrictness = localStorage.getItem("sdlc_strictness") || "4"
       const storedMaxParallel = localStorage.getItem("max_parallel_agents") || "24"
 
-      setInfraProfile(storedProvider as "platform" | "byok")
       setSdlcStrictness(Number(storedStrictness))
       setConcurrencyLimit(Number(storedMaxParallel))
     }
@@ -203,8 +198,6 @@ export default function Header({
         return "Projects Explorer"
       case "/settings":
         return "Global Settings"
-      case "/billing":
-        return "Billing & Compute"
       default:
         return "Aigentic Factory"
     }
@@ -410,26 +403,12 @@ export default function Header({
                     <span className="text-[9px] font-mono text-zinc-500 block -mt-1 mb-3">Enforced policy parameters</span>
                   </div>
 
-                  {/* Infra Selection */}
+                  {/* Access Mode */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block">Infrastructure Profile</label>
-                    <div className="grid grid-cols-2 gap-2 bg-[#060b13] p-1 rounded-lg border border-border/10">
-                      <button
-                        onClick={() => updateSetting("llm_provider", "hosted")}
-                        className={`text-[10px] py-1.5 rounded font-mono font-bold transition-all ${
-                          infraProfile === "platform" ? "bg-primary text-white shadow" : "text-zinc-500 hover:text-zinc-300"
-                        }`}
-                      >
-                        Platform-Hosted
-                      </button>
-                      <button
-                        onClick={() => updateSetting("llm_provider", "byok")}
-                        className={`text-[10px] py-1.5 rounded font-mono font-bold transition-all ${
-                          infraProfile === "byok" ? "bg-primary text-white shadow" : "text-zinc-500 hover:text-zinc-300"
-                        }`}
-                      >
-                        BYOK (Anthropic)
-                      </button>
+                    <label className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block">Access Mode</label>
+                    <div className="bg-[#060b13] p-2 rounded-lg border border-border/10 flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold text-primary">BYOK (Bring Your Own Key)</span>
+                      <span className="text-[8px] font-mono text-zinc-500 uppercase">Active</span>
                     </div>
                   </div>
 
@@ -535,17 +514,7 @@ export default function Header({
                       <Layers className="size-3.5 text-zinc-500" />
                       Projects Fleet
                     </button>
-                    <button 
-                      onClick={() => {
-                        setShowProfile(false)
-                        router.push(`/billing?projectId=${projectIdParam}`)
-                      }}
-                      className="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 hover:text-white transition-colors flex items-center gap-2"
-                    >
-                      <CreditCard className="size-3.5 text-zinc-500" />
-                      Billing & Usage
-                    </button>
-                    <button 
+                    <button
                       onClick={() => {
                         setShowProfile(false)
                         router.push(`/settings?tab=profile&projectId=${projectIdParam}`)

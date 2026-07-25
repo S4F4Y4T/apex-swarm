@@ -245,17 +245,17 @@ function DashboardContent() {
           </div>
         </div>
 
-        {/* Credits Stat */}
+        {/* Usage Stat */}
         <div className="bg-[#000000]/40 border border-border/20 backdrop-blur-md p-5 rounded-xl flex flex-col justify-between h-28 hover:border-primary/30 transition-all">
           <div className="flex justify-between items-start">
-            <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">Credits Used</span>
-            <span className="text-zinc-500 font-mono text-[9px]">TOTAL LIMIT: 1000</span>
+            <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-widest">Usage (Your Keys)</span>
+            <span className="text-zinc-500 font-mono text-[9px]">BYOK</span>
           </div>
           <div>
             <div className="text-2xl font-black text-primary tracking-tight">
               {currentProject.totalSpend}
             </div>
-            <p className="text-[10px] font-mono text-zinc-500 uppercase mt-1">Autonomous burn tracking</p>
+            <p className="text-[10px] font-mono text-zinc-500 uppercase mt-1">Autonomous spend tracking</p>
           </div>
         </div>
 

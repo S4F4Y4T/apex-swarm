@@ -3,15 +3,14 @@
 import React, { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import PageLayout from "@/components/PageLayout"
-import { 
-  MemoryStick as MemoryIcon, 
-  Cloud, 
-  Key, 
-  Eye, 
-  EyeOff, 
-  Shield, 
-  Bell, 
-  Save, 
+import {
+  MemoryStick as MemoryIcon,
+  Key,
+  Eye,
+  EyeOff,
+  Shield,
+  Bell,
+  Save,
   RotateCcw,
   Sparkles,
   CheckCircle2,
@@ -40,7 +39,6 @@ function SettingsPageContent() {
   }
 
   // System State
-  const [llmProvider, setLlmProvider] = useState<"hosted" | "byok">("byok")
   const [openaiKey, setOpenaiKey] = useState("")
   const [anthropicKey, setAnthropicKey] = useState("")
   const [googleKey, setGoogleKey] = useState("")
@@ -102,14 +100,12 @@ function SettingsPageContent() {
 
     // Load system settings
     const loadSettings = () => {
-      const storedProvider = localStorage.getItem("llm_provider") || "byok"
       const storedOpenaiKey = localStorage.getItem("openai_key") || ""
       const storedAnthropicKey = localStorage.getItem("anthropic_key") || ""
       const storedGoogleKey = localStorage.getItem("google_key") || ""
       const storedMaxParallel = localStorage.getItem("max_parallel_agents") || "24"
       const storedRunaway = localStorage.getItem("runaway_protection") || "5"
 
-      setLlmProvider(storedProvider as "hosted" | "byok")
       setOpenaiKey(storedOpenaiKey)
       setAnthropicKey(storedAnthropicKey)
       setGoogleKey(storedGoogleKey)
@@ -170,7 +166,6 @@ function SettingsPageContent() {
     localStorage.setItem("operator_avatar", avatarUrl)
 
     // Save system settings
-    localStorage.setItem("llm_provider", llmProvider)
     localStorage.setItem("openai_key", openaiKey)
     localStorage.setItem("anthropic_key", anthropicKey)
     localStorage.setItem("google_key", googleKey)
@@ -189,7 +184,6 @@ function SettingsPageContent() {
 
   const handleDiscard = () => {
     if (activeTab === "system") {
-      setLlmProvider("byok")
       setOpenaiKey("")
       setAnthropicKey("")
       setGoogleKey("")
@@ -301,72 +295,22 @@ function SettingsPageContent() {
                   <h3 className="text-base font-bold text-white uppercase tracking-wider">LLM Orchestration</h3>
                 </div>
                 <span className="font-mono text-[10px] px-2.5 py-0.5 bg-surface-container-high rounded border border-border/40 text-zinc-400">
-                  ACTIVE: {llmProvider === "hosted" ? "PLATFORM" : "BYOK"}
+                  ACTIVE: BYOK
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Hosted Card */}
-                <label 
-                  className={`relative flex cursor-pointer p-5 rounded-lg border transition-all duration-300 ${
-                    llmProvider === "hosted" 
-                      ? "border-primary bg-primary/5 shadow-[0_0_12px_rgba(76,215,246,0.05)]" 
-                      : "border-border/20 bg-surface-container-low/40 hover:bg-surface-bright/20"
-                  }`}
-                >
-                  <div className="flex-1 pr-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Cloud className={`size-4 ${llmProvider === "hosted" ? "text-primary" : "text-zinc-400"}`} />
-                      <span className={`text-sm font-bold ${llmProvider === "hosted" ? "text-primary" : "text-white"}`}>Platform-Hosted</span>
-                    </div>
-                    <p className="font-mono text-[10px] text-zinc-500 leading-relaxed">
-                      Utilize built-in Aigentic compute clusters. Best for rapid deployment and shared billing.
-                    </p>
-                  </div>
-                  <div className="flex items-center">
-                    <input 
-                      type="radio" 
-                      name="llm_provider" 
-                      checked={llmProvider === "hosted"}
-                      onChange={() => setLlmProvider("hosted")}
-                      className="form-radio text-primary focus:ring-primary bg-surface border-border/20 h-4.5 w-4.5 cursor-pointer"
-                    />
-                  </div>
-                </label>
-
-                {/* BYOK Card */}
-                <label 
-                  className={`relative flex cursor-pointer p-5 rounded-lg border transition-all duration-300 ${
-                    llmProvider === "byok" 
-                      ? "border-primary bg-primary/5 shadow-[0_0_12px_rgba(76,215,246,0.05)]" 
-                      : "border-border/20 bg-surface-container-low/40 hover:bg-surface-bright/20"
-                  }`}
-                >
-                  <div className="flex-1 pr-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Key className={`size-4 ${llmProvider === "byok" ? "text-primary" : "text-zinc-400"}`} />
-                      <span className={`text-sm font-bold ${llmProvider === "byok" ? "text-primary" : "text-white"}`}>Bring Your Own Key</span>
-                    </div>
-                    <p className="font-mono text-[10px] text-zinc-500 leading-relaxed">
-                      Direct connection to provider APIs. Maximum privacy and distinct billing control.
-                    </p>
-                  </div>
-                  <div className="flex items-center">
-                    <input 
-                      type="radio" 
-                      name="llm_provider" 
-                      checked={llmProvider === "byok"}
-                      onChange={() => setLlmProvider("byok")}
-                      className="form-radio text-primary focus:ring-primary bg-surface border-border/20 h-4.5 w-4.5 cursor-pointer"
-                    />
-                  </div>
-                </label>
+              <div className="flex items-start gap-3 p-4 rounded-lg border border-primary/20 bg-primary/5">
+                <Key className="size-4 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-sm font-bold text-primary block">Bring Your Own Key</span>
+                  <p className="font-mono text-[10px] text-zinc-500 leading-relaxed mt-1">
+                    Every agent connects directly to the provider APIs below using your own credentials. There is no platform-hosted billing mode.
+                  </p>
+                </div>
               </div>
 
               {/* BYOK Config Area */}
-              <div className={`pt-6 border-t border-dashed border-border/10 transition-all duration-300 ${
-                llmProvider === "byok" ? "opacity-100" : "opacity-40 pointer-events-none"
-              }`}>
+              <div className="pt-6 border-t border-dashed border-border/10">
                 <h4 className="font-mono text-[10px] text-zinc-400 font-bold mb-4 uppercase tracking-wider">Provider Credentials</h4>
                 <div className="space-y-3">
                   {/* OpenAI */}
@@ -381,14 +325,12 @@ function SettingsPageContent() {
                           type={showOpenai ? "text" : "password"}
                           value={openaiKey}
                           onChange={(e) => setOpenaiKey(e.target.value)}
-                          disabled={llmProvider !== "byok"}
                           className="w-full bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 pr-10 font-mono text-xs text-white focus:border-primary focus:ring-1 focus:ring-primary/40 disabled:opacity-50 transition-colors"
                           placeholder="sk-..."
                         />
                         <button 
                           type="button"
                           onClick={() => setShowOpenai(!showOpenai)}
-                          disabled={llmProvider !== "byok"}
                           className="absolute right-3 text-zinc-500 hover:text-white transition-colors"
                         >
                           {showOpenai ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -399,7 +341,7 @@ function SettingsPageContent() {
                       <button
                         type="button"
                         onClick={() => handleTestConnection("openai", openaiKey)}
-                        disabled={llmProvider !== "byok" || !openaiKey || testingOpenai}
+                        disabled={!openaiKey || testingOpenai}
                         className="px-3 py-1 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 text-primary rounded border border-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                       >
                         {testingOpenai ? "Testing..." : "Test Connection"}
@@ -424,14 +366,12 @@ function SettingsPageContent() {
                           type={showAnthropic ? "text" : "password"}
                           value={anthropicKey}
                           onChange={(e) => setAnthropicKey(e.target.value)}
-                          disabled={llmProvider !== "byok"}
                           className="w-full bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 pr-10 font-mono text-xs text-white focus:border-primary focus:ring-1 focus:ring-primary/40 disabled:opacity-50 transition-colors"
                           placeholder="sk-ant-..."
                         />
                         <button 
                           type="button"
                           onClick={() => setShowAnthropic(!showAnthropic)}
-                          disabled={llmProvider !== "byok"}
                           className="absolute right-3 text-zinc-500 hover:text-white transition-colors"
                         >
                           {showAnthropic ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -442,7 +382,7 @@ function SettingsPageContent() {
                       <button
                         type="button"
                         onClick={() => handleTestConnection("anthropic", anthropicKey)}
-                        disabled={llmProvider !== "byok" || !anthropicKey || testingAnthropic}
+                        disabled={!anthropicKey || testingAnthropic}
                         className="px-3 py-1 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 text-primary rounded border border-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                       >
                         {testingAnthropic ? "Testing..." : "Test Connection"}
@@ -467,14 +407,12 @@ function SettingsPageContent() {
                           type={showGoogle ? "text" : "password"}
                           value={googleKey}
                           onChange={(e) => setGoogleKey(e.target.value)}
-                          disabled={llmProvider !== "byok"}
                           className="w-full bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 pr-10 font-mono text-xs text-white focus:border-primary focus:ring-1 focus:ring-primary/40 disabled:opacity-50 transition-colors"
                           placeholder="AIzaSy..."
                         />
                         <button 
                           type="button"
                           onClick={() => setShowGoogle(!showGoogle)}
-                          disabled={llmProvider !== "byok"}
                           className="absolute right-3 text-zinc-500 hover:text-white transition-colors"
                         >
                           {showGoogle ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -485,7 +423,7 @@ function SettingsPageContent() {
                       <button
                         type="button"
                         onClick={() => handleTestConnection("google", googleKey)}
-                        disabled={llmProvider !== "byok" || !googleKey || testingGoogle}
+                        disabled={!googleKey || testingGoogle}
                         className="px-3 py-1 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 text-primary rounded border border-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                       >
                         {testingGoogle ? "Testing..." : "Test Connection"}

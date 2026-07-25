@@ -3,10 +3,9 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
-import { 
-  LayoutDashboard, 
-  DollarSign, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Settings,
   FolderOpen,
   User,
   Shield
@@ -51,12 +50,6 @@ export default function Sidebar() {
       href: `/projects?projectId=${projectId}`,
       icon: FolderOpen,
       isActive: pathname === "/projects" || pathname.startsWith("/workspace")
-    },
-    {
-      label: "Billing",
-      href: `/billing?projectId=${projectId}`,
-      icon: DollarSign,
-      isActive: pathname === "/billing"
     },
     {
       label: "Settings",

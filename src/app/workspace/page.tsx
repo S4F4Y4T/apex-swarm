@@ -532,7 +532,7 @@ function WorkspaceContent() {
           </div>
           <span className="text-white/10 hidden sm:inline">|</span>
           <div className="flex flex-col text-right">
-            <span className="text-[10px] text-zinc-500">CREDITS CONSUMED</span>
+            <span className="text-[10px] text-zinc-500">USAGE (BYOK)</span>
             <span className="text-secondary font-bold font-sans text-sm">${totalCost.toFixed(2)}</span>
           </div>
         </div>
@@ -1365,18 +1365,18 @@ function WorkspaceContent() {
 
           </Tabs>
 
-          {/* Lower Details Panel (Billing limits and credits logs) */}
+          {/* Lower Details Panel (BYOK usage & calibration) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
                   <DollarSign className="size-4 text-secondary" />
-                  Credit Projections
+                  Usage Overview (BYOK)
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-xs text-muted-foreground leading-relaxed">
-                We are currently running in Dark Factory orchestration mode. Calculated consumption is <strong>$0.04/token execution</strong>. Current monthly forecast: $280.00 / $500.00 limit.
+                Every agent runs on your own provider keys. Estimated consumption this session: <strong>${totalCost.toFixed(2)}</strong> (~$0.04/token execution). This is a spend estimate only — actual limits are governed by your provider account, not the platform.
               </CardContent>
             </Card>
 
