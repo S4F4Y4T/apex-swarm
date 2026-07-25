@@ -4,10 +4,10 @@ import React from "react"
 import { Bell, Settings, Search } from "lucide-react"
 
 interface HeaderProps {
-  title?: string
+  title?: React.ReactNode
   badge?: {
     text: string
-    variant?: "primary" | "secondary" | "tertiary" | "default"
+    variant?: "primary" | "secondary" | "tertiary" | "default" | "destructive"
   }
   showSearch?: boolean
   searchPlaceholder?: string
@@ -32,6 +32,8 @@ export default function Header({
         return "bg-secondary/10 border-secondary/20 text-secondary"
       case "tertiary":
         return "bg-tertiary/10 border-tertiary/20 text-tertiary"
+      case "destructive":
+        return "bg-destructive/10 border-destructive/20 text-destructive"
       default:
         return "bg-zinc-800 border-zinc-700 text-zinc-400"
     }
@@ -45,6 +47,8 @@ export default function Header({
         return "bg-secondary"
       case "tertiary":
         return "bg-tertiary"
+      case "destructive":
+        return "bg-destructive"
       default:
         return "bg-zinc-400"
     }

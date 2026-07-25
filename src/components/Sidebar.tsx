@@ -5,11 +5,13 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { 
   LayoutDashboard, 
-  Activity, 
   DollarSign, 
   Settings, 
   FileText, 
-  HelpCircle
+  HelpCircle,
+  FolderOpen,
+  User,
+  Plus
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -21,7 +23,6 @@ export default function Sidebar() {
     if (typeof window !== "undefined") {
       setSearchQuery(window.location.search)
       
-      // Listen to popstate or navigation events
       const handleLocationChange = () => {
         setSearchQuery(window.location.search)
       }
@@ -35,13 +36,13 @@ export default function Sidebar() {
       label: "Dashboard",
       href: "/",
       icon: LayoutDashboard,
-      isActive: pathname === "/" && !searchQuery.includes("tab=settings")
+      isActive: pathname === "/"
     },
     {
-      label: "Telemetry",
-      href: "/telemetry",
-      icon: Activity,
-      isActive: pathname === "/telemetry"
+      label: "Projects",
+      href: "/projects",
+      icon: FolderOpen,
+      isActive: pathname === "/projects" || pathname.startsWith("/workspace")
     },
     {
       label: "Billing",
@@ -51,9 +52,9 @@ export default function Sidebar() {
     },
     {
       label: "Settings",
-      href: "/?tab=settings",
+      href: "/settings",
       icon: Settings,
-      isActive: pathname === "/" && searchQuery.includes("tab=settings")
+      isActive: pathname === "/settings"
     }
   ]
 
@@ -71,14 +72,6 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => {
-                // Manually trigger location change state update for same-page query param navigation
-                if (item.href.startsWith("/?")) {
-                  setTimeout(() => setSearchQuery(item.href.substring(1)), 50)
-                } else if (item.href === "/") {
-                  setTimeout(() => setSearchQuery(""), 50)
-                }
-              }}
               className={cn(
                 "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-200",
                 item.isActive 
@@ -93,15 +86,30 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-border/10 flex flex-col gap-1">
-        <Link href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary transition-colors">
-          <FileText className="size-3.5" />
-          <span>Documentation</span>
-        </Link>
-        <Link href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary transition-colors">
-          <HelpCircle className="size-3.5" />
-          <span>Support</span>
-        </Link>
+      {/* Chief Architect User Profile & Help links at the bottom */}
+      <div className="p-4 border-t border-border/10 flex flex-col gap-4">
+        <div className="flex items-center gap-3 px-4 py-2 bg-surface-container-low/50 rounded-lg border border-border/10">
+          <img 
+            alt="User Workspace Profile" 
+            className="w-8 h-8 rounded-full border border-primary/20 object-cover" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAISRsAirh2nXzOCeXwvsCE2p4N49oiN0aiSTQxDl4GUB9Wzn29qmg9cJ6DyklB9YPrA9FeG7LUqg8eLbzp6iOMhLiTFaqV0MGSHvX1Zh4BXhIcJ4bfKA9bPYpiSDaDCo73ERNfWkKGLJTO5cOXc26taaumBf0dnsBCuGDEm1fEfmJ8dSZLZNsOWye2NcgFRspAOafmIWZj6_Dw2XiiN2M070DHE9lojwnvdHt8T00RpKGtZR8t2xx850QP_FWLsV_KkymHdhXemk"
+          />
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-xs text-foreground truncate">Chief Architect</p>
+            <p className="text-[10px] text-zinc-500 font-mono">Operator #04</p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Link href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary transition-colors">
+            <FileText className="size-3.5" />
+            <span>Documentation</span>
+          </Link>
+          <Link href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg text-xs text-muted-foreground hover:text-primary transition-colors">
+            <HelpCircle className="size-3.5" />
+            <span>Support</span>
+          </Link>
+        </div>
       </div>
     </aside>
   )

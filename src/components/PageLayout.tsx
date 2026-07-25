@@ -6,10 +6,10 @@ import Footer from "./Footer"
 import { cn } from "@/lib/utils"
 
 interface PageLayoutProps {
-  title?: string
+  title?: React.ReactNode
   badge?: {
     text: string
-    variant?: "primary" | "secondary" | "tertiary" | "default"
+    variant?: "primary" | "secondary" | "tertiary" | "default" | "destructive"
   }
   showSearch?: boolean
   searchPlaceholder?: string

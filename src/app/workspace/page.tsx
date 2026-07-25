@@ -24,8 +24,11 @@ import {
   Eye, 
   X,
   Check,
-  Circle
+  Circle,
+  ChevronDown
 } from "lucide-react"
+
+import { projectsData, ProjectConfig } from "@/lib/projects"
 
 import { 
   Card, 
@@ -86,37 +89,45 @@ interface KanbanTask {
 }
 
 export default function Dashboard() {
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("jsrm_erp")
+  const [showProjectDropdown, setShowProjectDropdown] = useState<boolean>(false)
+  const currentProject = projectsData.find(p => p.id === selectedProjectId) || projectsData[0]
+
   // Active tab state
   const [activeTab, setActiveTab] = useState<string>("kanban")
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const updateTab = () => {
+      const updateParams = () => {
         const params = new URLSearchParams(window.location.search)
         const tab = params.get("tab")
         if (tab && ["kanban", "logs", "chat", "settings"].includes(tab)) {
           setActiveTab(tab)
         }
+        const pid = params.get("projectId")
+        if (pid) {
+          setSelectedProjectId(pid)
+        }
       }
-      updateTab()
+      updateParams()
 
       const originalPush = window.history.pushState
       window.history.pushState = function (...args) {
         originalPush.apply(window.history, args)
-        updateTab()
+        updateParams()
       }
       
       const originalReplace = window.history.replaceState
       window.history.replaceState = function (...args) {
         originalReplace.apply(window.history, args)
-        updateTab()
+        updateParams()
       }
 
-      window.addEventListener("popstate", updateTab)
+      window.addEventListener("popstate", updateParams)
       return () => {
         window.history.pushState = originalPush
         window.history.replaceState = originalReplace
-        window.removeEventListener("popstate", updateTab)
+        window.removeEventListener("popstate", updateParams)
       }
     }
   }, [])
@@ -216,6 +227,26 @@ export default function Dashboard() {
   const [docsGenerationEnforced, setDocsGenerationEnforced] = useState<boolean>(true)
   const [ddasEnabled, setDdasEnabled] = useState<boolean>(false)
   const [isSavingSettings, setIsSavingSettings] = useState<boolean>(false)
+
+  // Sync settings when project changes
+  useEffect(() => {
+    if (currentProject) {
+      setCompanyName(currentProject.companyName)
+      setMissionScope(currentProject.missionScope)
+      
+      // Update initial chat message based on the project's agent
+      setChatMessages([
+        {
+          id: "c1",
+          sender: "agent",
+          agentName: currentProject.agentName,
+          avatar: currentProject.agentIcon,
+          message: `Welcome operator! I am the ${currentProject.agentName} (${currentProject.agentIcon}) dedicated to ${currentProject.name}. How can I assist you in this workspace today?`,
+          timestamp: new Date().toTimeString().split(' ')[0]
+        }
+      ])
+    }
+  }, [selectedProjectId])
 
   // Auto-scroll for logs and chat
   const logsEndRef = useRef<HTMLDivElement>(null)
@@ -447,16 +478,62 @@ export default function Dashboard() {
     return tasks.filter(task => task.status === status)
   }
 
+  const projectTitleDropdown = (
+    <div className="relative">
+      <button 
+        onClick={() => setShowProjectDropdown(!showProjectDropdown)}
+        className="flex items-center gap-2 text-left font-black text-white uppercase tracking-widest hover:text-primary transition-colors text-lg"
+      >
+        <span>{currentProject.name} Workspace</span>
+        <ChevronDown className="size-4 shrink-0" />
+      </button>
+      
+      {showProjectDropdown && (
+        <div className="absolute left-0 mt-2 w-72 bg-[#0b1326] border border-border/40 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-md">
+          <div className="p-3 border-b border-border/10">
+            <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Select Workspace</span>
+          </div>
+          <div className="py-1">
+            {projectsData.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => {
+                  setSelectedProjectId(p.id)
+                  setShowProjectDropdown(false)
+                  // Update URL parameter
+                  if (typeof window !== "undefined") {
+                    const params = new URLSearchParams(window.location.search)
+                    params.set("projectId", p.id)
+                    window.history.pushState({}, "", `${window.location.pathname}?${params.toString()}`)
+                  }
+                }}
+                className={`w-full text-left px-4 py-3 hover:bg-surface-bright/20 flex items-center justify-between transition-colors border-l-2 ${
+                  p.id === selectedProjectId ? "bg-primary/5 text-primary border-l-primary" : "text-muted-foreground border-l-transparent"
+                }`}
+              >
+                <div>
+                  <p className="font-semibold text-sm font-sans">{p.name}</p>
+                  <p className="text-[9px] font-mono text-zinc-500 truncate max-w-[200px]">{p.description}</p>
+                </div>
+                <span className="text-lg">{p.agentIcon}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <PageLayout
-      title="Agentic Software Factory"
-      badge={{ text: "ACTIVE", variant: "primary" }}
+      title={projectTitleDropdown}
+      badge={{ text: currentProject.status, variant: currentProject.statusType === "error" ? "destructive" : currentProject.statusType === "paused" ? "secondary" : "primary" }}
       className="max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 flex-grow"
       headerActions={
         <div className="flex items-center gap-6 text-xs font-mono text-muted-foreground">
           <div className="hidden xl:flex flex-col text-right">
             <span className="text-[10px] text-zinc-500">PROJECT WORKSPACE ID</span>
-            <span className="text-white">4292011975347891523</span>
+            <span className="text-white">{currentProject.workspaceId}</span>
           </div>
           <span className="text-white/10 hidden sm:inline">|</span>
           <div className="flex items-center gap-2">
