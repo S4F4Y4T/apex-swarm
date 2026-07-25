@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aigentic Factory | JSRM ERP Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .status-pulse {
+            position: relative;
+        }
+        .status-pulse::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.4;
+            animation: pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .kanban-column {
+            min-width: 280px;
+            max-width: 320px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        .active-glow {
+            box-shadow: 0 0 15px rgba(76, 215, 246, 0.15);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#131b2e",
+                        "surface-tint": "#4cd7f6",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-tertiary": "#003824",
+                        "tertiary": "#4edea3",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary-container": "#00452e",
+                        "on-secondary": "#472a00",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "inverse-primary": "#00687a",
+                        "secondary": "#ffb95f",
+                        "surface-variant": "#2d3449",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "tertiary-container": "#1bbd85",
+                        "surface-dim": "#0b1326",
+                        "primary": "#4cd7f6",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-surface-variant": "#bcc9cd",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#2d3449",
+                        "on-tertiary-fixed": "#002113",
+                        "on-primary-container": "#00424f",
+                        "surface-container-high": "#222a3d",
+                        "on-secondary-fixed": "#2a1700",
+                        "primary-fixed": "#acedff",
+                        "on-primary": "#003640",
+                        "surface-container-lowest": "#060e20",
+                        "outline": "#869397",
+                        "primary-container": "#06b6d4",
+                        "on-background": "#dae2fd",
+                        "on-secondary-container": "#5b3800",
+                        "inverse-surface": "#dae2fd",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-surface": "#dae2fd",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "background": "#0b1326",
+                        "secondary-fixed": "#ffddb8",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-bright": "#31394d",
+                        "secondary-container": "#ee9800",
+                        "surface": "#0b1326",
+                        "outline-variant": "#3d494c",
+                        "surface-container": "#171f33"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "xl": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "display": ["Inter"],
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "mono-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "mono-code": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- Side Navigation (Collapsed State as per prompt) -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant w-16 transition-all duration-200 ease-in-out z-50 group hover:w-64">
+<div class="flex items-center h-16 px-4 border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary text-2xl">account_tree</span>
+<span class="ml-4 font-display text-headline-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Aigentic Factory</span>
+</div>
+<nav class="flex-1 py-4 overflow-y-auto custom-scrollbar">
+<div class="flex flex-col gap-2 px-2">
+<a class="flex items-center h-12 rounded-lg text-primary font-bold border-r-2 border-primary hover:bg-surface-bright transition-all px-2" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="ml-4 font-body-md opacity-0 group-hover:opacity-100 transition-opacity">Dashboard</span>
+</a>
+<a class="flex items-center h-12 rounded-lg text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all px-2" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="ml-4 font-body-md opacity-0 group-hover:opacity-100 transition-opacity">Projects</span>
+</a>
+<a class="flex items-center h-12 rounded-lg text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all px-2" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="ml-4 font-body-md opacity-0 group-hover:opacity-100 transition-opacity">Billing</span>
+</a>
+<a class="flex items-center h-12 rounded-lg text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all px-2" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="ml-4 font-body-md opacity-0 group-hover:opacity-100 transition-opacity">Settings</span>
+</a>
+</div>
+</nav>
+<div class="p-4 border-t border-outline-variant">
+<div class="flex items-center gap-4 px-2 py-2">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-body-md opacity-0 group-hover:opacity-100 transition-opacity">Docs</span>
+</div>
+<div class="flex items-center gap-4 px-2 py-2">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+<span class="font-body-md opacity-0 group-hover:opacity-100 transition-opacity">Support</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-16 flex flex-col h-screen overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-lg">
+<h1 class="font-display text-headline-lg font-black text-primary tracking-tighter uppercase">JSRM ERP</h1>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div class="flex gap-md">
+<a class="text-on-surface-variant font-mono-label hover:text-primary transition-colors" href="#">Network</a>
+<a class="text-on-surface-variant font-mono-label hover:text-primary transition-colors" href="#">Registry</a>
+<a class="text-on-surface-variant font-mono-label hover:text-primary transition-colors" href="#">Vault</a>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative hidden md:block">
+<input class="bg-surface-container-low border-outline-variant rounded-full text-sm py-1.5 pl-10 pr-4 w-64 focus:ring-1 focus:ring-primary focus:border-primary" placeholder="Search agents..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm font-mono-label scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>
+                        HITL Alerts
+                    </button>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer transition-colors" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/30">
+<img class="w-full h-full object-cover" data-alt="A portrait of a senior technical architect with sharp features, wearing a dark turtleneck, against a background of glowing blue digital circuit lines. Cinematic lighting with cool cyan tones and deep shadows, professional and authoritative atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAigr_HpuVZIyiF6xkZe62GDQXNhFMaK2Hi2foL1alhw9RdV4-we-phHmOr5HzwPOF9EmCSWwcC4sKurJHrfamrQQmTC4sG1YNCC9JiRS3jlfL15du7kG8ugQQFn1RdPb3TAWAfpllUSPUkjDkybTNcINnahMcjJcgXwZqwdMgmsECuTPWDBka64UoTWTOcF4MCxjT9WuKLAfjXChYqQr1Z68ytGTObFU5ArfTB0Bg82rYv1MjOGam3ZbVQci2J2LClzIkj6viscq8"/>
+</div>
+</div>
+</div>
+</header>
+<!-- View Navigation Tabs -->
+<section class="flex items-center px-gutter h-12 bg-surface-container-lowest border-b border-outline-variant gap-lg">
+<button class="text-on-surface-variant font-mono-label h-full border-b-2 border-transparent hover:text-primary transition-all">SUMMARY</button>
+<button class="text-primary font-bold font-mono-label h-full border-b-2 border-primary">KANBAN</button>
+<button class="text-on-surface-variant font-mono-label h-full border-b-2 border-transparent hover:text-primary transition-all">METRICS</button>
+<button class="text-on-surface-variant font-mono-label h-full border-b-2 border-transparent hover:text-primary transition-all">LOGS</button>
+<div class="flex-1"></div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="font-mono-label">AGENT POOL: 12 ACTIVE</span>
+<span class="w-2 h-2 rounded-full bg-tertiary status-pulse"></span>
+</div>
+</section>
+<!-- Kanban Board Area -->
+<div class="flex-1 overflow-x-auto overflow-y-hidden custom-scrollbar bg-background p-lg">
+<div class="flex h-full gap-lg">
+<!-- Backlog Column -->
+<div class="kanban-column flex flex-col h-full bg-surface-container-low/50 border border-outline-variant/30 rounded-lg">
+<div class="p-md flex justify-between items-center border-b border-outline-variant">
+<h3 class="font-mono-label text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                            BACKLOG
+                        </h3>
+<span class="text-xs font-mono-label px-2 bg-surface-variant rounded">1</span>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-sm custom-scrollbar">
+<!-- Card: Order svc -->
+<div class="glass-panel p-md rounded-lg border-l-4 border-outline hover:border-l-primary transition-all cursor-grab active:cursor-grabbing">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">check_box_outline_blank</span>
+<span class="font-mono-label text-[10px] text-on-surface-variant">#SVC-004</span>
+</div>
+<h4 class="font-headline-md text-sm text-on-surface mb-md">Order svc</h4>
+<div class="flex items-center justify-between mt-lg">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center border border-background">
+<span class="material-symbols-outlined text-[12px]">smart_toy</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-sm text-on-surface-variant">more_vert</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Planning Column -->
+<div class="kanban-column flex flex-col h-full bg-surface-container-low/50 border border-outline-variant/30 rounded-lg">
+<div class="p-md flex justify-between items-center border-b border-outline-variant">
+<h3 class="font-mono-label text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                            PLANNING
+                        </h3>
+<span class="text-xs font-mono-label px-2 bg-surface-variant rounded">1</span>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-sm custom-scrollbar">
+<!-- Card: Auth spec -->
+<div class="glass-panel p-md rounded-lg border-l-4 border-secondary hover:active-glow transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-secondary text-lg">view_list</span>
+<span class="font-mono-label text-[10px] text-on-surface-variant">#SPEC-12</span>
+</div>
+<h4 class="font-headline-md text-sm text-on-surface mb-md">Auth spec</h4>
+<div class="flex items-center justify-between mt-lg">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full overflow-hidden border border-secondary/50">
+<img class="w-full h-full object-cover" data-alt="A futuristic UI avatar for an AI agent named 'Planner'. A stylized cybernetic eye design with golden yellow iris and complex circuitry in the background. The lighting is focused and warm, symbolizing strategy and foresight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBEBkKBLIsUSU40H48HqIMc77J7ju_SBkROp5VMkEc7AMGqCEt6YO32m6Y-HbAYWOkA0etD2t2VqgQttUAXO-RYTUHLycepXVN2eMgjl6nqwQVoPgDA_gOQAMLkyR82e-Di7lG6FZfh-cBVvjOAhS214DRbwDIp5zmxozJWof1Ldp0UG6UngJRCsuA6ILbWvTV65-YzEzfLe_jEy75F9mxKUTJ1g2Jz_2UwNDjUrimf8JB_jWyu8zzQpuigBKv9aWsRcwoJKMX3uk"/>
+</div>
+<span class="font-mono-label text-[10px] text-on-surface-variant">Planner</span>
+</div>
+<div class="flex gap-1">
+<span class="px-1.5 py-0.5 rounded-sm bg-secondary/10 text-secondary text-[10px] font-bold">HIGH</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- In Progress Column -->
+<div class="kanban-column flex flex-col h-full bg-surface-container-low/50 border border-outline-variant/30 rounded-lg">
+<div class="p-md flex justify-between items-center border-b border-outline-variant">
+<h3 class="font-mono-label text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary status-pulse"></span>
+                            IN PROGRESS
+                        </h3>
+<span class="text-xs font-mono-label px-2 bg-surface-variant rounded">1</span>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-sm custom-scrollbar">
+<!-- Card: User svc -->
+<div class="glass-panel p-md rounded-lg border-l-4 border-primary shadow-[0_0_10px_rgba(76,215,246,0.1)]">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<span class="font-mono-label text-[10px] text-on-surface-variant">#SVC-002</span>
+</div>
+<h4 class="font-headline-md text-sm text-on-surface mb-2">User svc</h4>
+<div class="space-y-1 mb-md">
+<div class="flex justify-between text-[10px] font-mono-label text-primary">
+<span>SYNTHESIZING...</span>
+<span>62%</span>
+</div>
+<div class="w-full h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 62%"></div>
+</div>
+</div>
+<div class="flex items-center justify-between mt-lg">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full overflow-hidden border border-primary/50">
+<img class="w-full h-full object-cover" data-alt="An AI agent avatar representing a 'Developer'. A network of interconnected neon cyan nodes forming a brain-like shape. High contrast against a dark obsidian background, sharp focus, technical and precise aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2Nwfb_jkv0WPNs1lPDHHLuL96Oq5PAN3-GgGVvMmp2-YoXb3R3K6H0nRqmYdpLXA5OJllTYkl5J5ORIxm4la-GqKnAmXpy0zt80W5g0gY-0FXayIRh14S883rWbyRIgmkI_6Wk89vNnZpK9WGRf1JsicoBmSUpxOO5BNombVc5XVO6deA-UPYRF2oOo57XfmWJ7eUZMt80cF7jvCav9RZ13HTo8ull5czM6KTSodW2Sd-CUYEtqSJuatnMtzS2_VF6Fco7FRNmcE"/>
+</div>
+<span class="font-mono-label text-[10px] text-on-surface-variant">Developer</span>
+</div>
+<span class="material-symbols-outlined text-sm text-primary">auto_fix_high</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Review Column -->
+<div class="kanban-column flex flex-col h-full bg-surface-container-low/50 border border-outline-variant/30 rounded-lg">
+<div class="p-md flex justify-between items-center border-b border-outline-variant">
+<h3 class="font-mono-label text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                            REVIEW
+                        </h3>
+<span class="text-xs font-mono-label px-2 bg-surface-variant rounded">1</span>
+</div>
+<div class="flex-1 overflow-y-auto p-sm flex flex-col gap-sm custom-scrollbar">
+<!-- Card: Catalog svc -->
+<div class="glass-panel p-md rounded-lg border-l-4 border-secondary/50">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-secondary text-lg">pause</span>
+<span class="font-mono-label text-[10px] text-on-surface-variant">#SVC-001</span>
+</div>
+<h4 class="font-headline-md text-sm text-on-surface mb-2">Catalog svc</h4>
+<div class="flex items-center gap-2 bg-secondary/10 border border-secondary/20 p-2 rounded mb-md">
+<span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-wider">needs your OK</span>
+</div>
+<div class="flex items-center justify-between mt-lg">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full overflow-hidden border border-secondary-fixed-dim/50">
+<img class="w-full h-full object-cover" data-alt="An AI agent avatar representing a 'Tester'. A geometric prism refracting light into various spectral components against a pitch-black background. Sharp edges and amber light accents, representing analytical scrutiny and verification." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_ueE5w2FpBS-7rWIvFY4AXWy3slWBo6iW4yqV5Dh_Avr5xXHn6-dn7vY7PZZQoIixiG9ZC95M7T_b8ZauwNXvZD5uI3POYO5DfcJlrPF4jIBnKzqgzR7MAK2TXr2bDwFhH20lo_TdUGSCc0oWon8V7OMY97SeD8W57a3oPUAS5DGGSWJdTqHROO6ciEZPUsUexmsxEGvYE6KZ9ABmsmdLsqyy3FE652WGR735D9HXEwaLzaC5cei6e_fkRa6oKf2r5J7rhJdRHpQ"/>
+</div>
+<span class="font-mono-label text-[10px] text-on-surface-variant">Tester</span>
+</div>
+<button class="bg-secondary text-on-secondary px-2 py-0.5 rounded-sm font-mono-label text-[10px] font-bold">APPROVE</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Done Column -->
+<div class="kanban-column flex flex-col h-full bg-surface-container-low/50 border border-outline-variant/30 rounded-lg">
+<div class="p-md flex justify-between items-center border-b border-outline-variant">
+<h3 class="font-mono-label text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                            DONE
+                        </h3>
+<span class="text-xs font-mono-label px-2 bg-surface-variant rounded">0</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center text-outline-variant opacity-30">
+<span class="material-symbols-outlined text-4xl mb-2">inbox_customize</span>
+<p class="font-mono-label text-xs">NO ENTITIES</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Status Strip -->
+<footer class="h-8 bg-surface-container-lowest border-t border-outline-variant flex items-center px-gutter justify-between">
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono-label text-[10px] text-on-surface-variant">SYSTEM: NOMINAL</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-primary">hub</span>
+<span class="font-mono-label text-[10px] text-on-surface-variant">CLUSTER: US-EAST-1 (v2.4)</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<span class="font-mono-label text-[10px] text-on-surface-variant">UPTIME: 142h 21m</span>
+<div class="flex items-center gap-1">
+<span class="font-mono-label text-[10px] text-on-surface-variant">LATENCY:</span>
+<span class="font-mono-label text-[10px] text-tertiary">24ms</span>
+</div>
+</div>
+</footer>
+</main>
+<script>
+        // Simple micro-interaction for Kanban cards
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

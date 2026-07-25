@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aigentic Factory | Projects Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#060e20",
+                    "on-primary-fixed": "#001f26",
+                    "surface-container-highest": "#2d3449",
+                    "on-secondary-fixed-variant": "#653e00",
+                    "secondary-fixed-dim": "#ffb95f",
+                    "on-tertiary": "#003824",
+                    "on-secondary-container": "#5b3800",
+                    "surface-container-high": "#222a3d",
+                    "on-tertiary-fixed": "#002113",
+                    "surface": "#0b1326",
+                    "surface-bright": "#31394d",
+                    "secondary": "#ffb95f",
+                    "on-surface-variant": "#bcc9cd",
+                    "tertiary-container": "#1bbd85",
+                    "on-primary-container": "#00424f",
+                    "primary": "#4cd7f6",
+                    "primary-fixed": "#acedff",
+                    "surface-variant": "#2d3449",
+                    "secondary-fixed": "#ffddb8",
+                    "primary-fixed-dim": "#4cd7f6",
+                    "background": "#0b1326",
+                    "primary-container": "#06b6d4",
+                    "surface-container-low": "#131b2e",
+                    "on-primary": "#003640",
+                    "on-secondary": "#472a00",
+                    "surface-tint": "#4cd7f6",
+                    "on-error": "#690005",
+                    "inverse-on-surface": "#283044",
+                    "inverse-primary": "#00687a",
+                    "outline-variant": "#3d494c",
+                    "on-surface": "#dae2fd",
+                    "inverse-surface": "#dae2fd",
+                    "surface-container": "#171f33",
+                    "error": "#ffb4ab",
+                    "surface-dim": "#0b1326",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "outline": "#869397",
+                    "on-secondary-fixed": "#2a1700",
+                    "on-error-container": "#ffdad6",
+                    "tertiary": "#4edea3",
+                    "on-primary-fixed-variant": "#004e5c",
+                    "tertiary-fixed": "#6ffbbe",
+                    "on-tertiary-container": "#00452e",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-background": "#dae2fd",
+                    "secondary-container": "#ee9800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "margin-desktop": "32px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "xl": "48px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "mono-code": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "display": ["Inter"],
+                    "mono-label": ["JetBrains Mono"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "mono-code": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "mono-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #020617;
+            color: #dae2fd;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .active-glow {
+            box-shadow: 0 0 12px 0 rgba(76, 215, 246, 0.15);
+        }
+
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 10px;
+        }
+
+        .hitl-alert {
+            background: linear-gradient(90deg, rgba(238, 152, 0, 0.15) 0%, transparent 100%);
+            border-left: 2px solid #ee9800;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-hidden">
+<!-- Sidebar Navigation -->
+<nav class="flex flex-col h-screen fixed left-0 top-0 docked left-0 h-full w-64 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant z-50">
+<div class="p-lg flex flex-col gap-unit">
+<h1 class="font-display text-display font-bold text-primary dark:text-primary tracking-tighter">Aigentic Factory</h1>
+<p class="font-mono-label text-mono-label text-on-surface-variant">Autonomous v2.4</p>
+</div>
+<div class="mt-xl flex-1 px-md flex flex-col gap-sm">
+<button class="flex items-center gap-md px-md py-sm transition-all duration-200 ease-in-out hover:bg-surface-bright dark:hover:bg-surface-bright hover:text-primary text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-headline-md text-headline-md">Dashboard</span>
+</button>
+<button class="flex items-center gap-md px-md py-sm transition-all duration-200 ease-in-out bg-surface-bright text-primary dark:text-primary font-bold border-r-2 border-primary">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-headline-md text-headline-md">Projects</span>
+</button>
+<button class="flex items-center gap-md px-md py-sm transition-all duration-200 ease-in-out hover:bg-surface-bright dark:hover:bg-surface-bright hover:text-primary text-on-surface-variant">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-headline-md text-headline-md">Billing</span>
+</button>
+<button class="flex items-center gap-md px-md py-sm transition-all duration-200 ease-in-out hover:bg-surface-bright dark:hover:bg-surface-bright hover:text-primary text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-headline-md text-headline-md">Settings</span>
+</button>
+</div>
+<div class="p-md">
+<button class="w-full py-md bg-primary-container text-on-primary-container font-bold rounded hover:brightness-110 transition-all flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">add</span>
+                Deploy New Agent
+            </button>
+</div>
+<div class="p-md flex flex-col gap-xs">
+<button class="flex items-center gap-md px-md py-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">description</span>
+<span class="font-mono-label text-mono-label">Docs</span>
+</button>
+<button class="flex items-center gap-md px-md py-xs text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+<span class="font-mono-label text-mono-label">Support</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-64 h-screen flex flex-col bg-surface-container-lowest">
+<!-- Top Bar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-lg">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-high border-none rounded-lg pl-10 pr-4 py-2 text-on-surface placeholder:text-outline-variant focus:ring-1 focus:ring-primary w-64" placeholder="Scan modules..." type="text"/>
+</div>
+<div class="flex items-center gap-md font-mono-label text-mono-label">
+<span class="text-on-surface-variant">ENV:</span>
+<span class="text-tertiary">PRODUCTION_STABLE</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex bg-surface-container rounded p-1 border border-outline-variant">
+<button class="px-3 py-1 bg-surface-container-highest text-primary rounded flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+<span class="font-mono-label text-mono-label">Card View</span>
+</button>
+<button class="px-3 py-1 text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">table_rows</span>
+<span class="font-mono-label text-mono-label">Table View</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-md">
+<button class="text-secondary-container flex items-center gap-sm px-md py-2 bg-secondary-container/10 rounded border border-secondary-container/20">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-mono-label text-mono-label">HITL ALERTS (2)</span>
+</button>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-transform active:scale-90">notifications</span>
+<img class="w-8 h-8 rounded-full border border-primary/40 p-[2px]" data-alt="A macro close-up portrait of a senior system architect wearing sleek, minimal technical gear, dimly lit with cool blue and cyan rim lighting against a dark industrial background. Professional, authoritative, and tech-focused aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMsk2SJqF1IR_L4lhrmCHifEg85-Iz5JPPcHLdMGj7x96ZSBGWe-gr4WOkwx2Zq73c6-392dZYkCd_sA6PuX7Y2oNzYSo5Ugv1GOfpJmH22aA0bctBp5BUeIhrpCoUkRHlZ4tBrSDNQjr13Ak-9cRQd-qEC2F-9iLLS3Tsqia5UcOXHEiAkehJKpLz8NI8KJy2px2KwPiVOjjk9PnGDfZRNO8dg2ZpeBeiL77bSTymg5f4WxXhMBJjzogR2wFKW0fRIDF2rxl0xWQ"/>
+</div>
+</div>
+</header>
+<!-- Factory Modules Grid -->
+<div class="flex-1 overflow-y-auto p-margin-desktop custom-scrollbar">
+<div class="mb-lg flex justify-between items-end">
+<div>
+<h2 class="font-display text-headline-lg font-black text-on-surface mb-xs uppercase tracking-widest">Active Factory Modules</h2>
+<p class="text-on-surface-variant font-mono-code text-mono-code">Total Units: 18 | Syncing via 2.4-ALPHA-3</p>
+</div>
+<div class="flex gap-md">
+<button class="flex items-center gap-sm font-mono-label text-mono-label text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        FILTER
+                    </button>
+<button class="flex items-center gap-sm font-mono-label text-mono-label text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">sort</span>
+                        SORT
+                    </button>
+</div>
+</div>
+<!-- Grid Container -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Project Card 1: Active -->
+<div class="glass-panel active-glow flex flex-col p-md rounded-lg relative group transition-all hover:scale-[1.01] hover:border-primary/30">
+<div class="flex justify-between items-center mb-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary pulse-dot"></span>
+<span class="font-mono-code text-mono-code text-on-surface-variant">/projects/evore_backend/</span>
+</div>
+<button class="text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-primary mb-xs">Project Evore: Core</h3>
+<p class="text-on-surface-variant text-body-md mb-md">Automated microservices orchestration layer with redundant routing protocols.</p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary font-mono-label text-[10px] rounded">ACTIVE DEVELOPMENT</span>
+<span class="px-2 py-0.5 bg-surface-container-highest border border-outline-variant text-on-surface-variant font-mono-label text-[10px] rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">verified</span> SDLC-STRICT
+                            </span>
+</div>
+<div class="flex items-center gap-md py-2 px-3 bg-surface-container-high/50 rounded-lg">
+<span class="text-xl">🤖</span>
+<div>
+<p class="font-mono-label text-mono-label text-outline">ACTIVE AGENT</p>
+<p class="text-body-md text-on-surface font-semibold">Lead Developer Agent v4</p>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<div class="flex justify-between font-mono-label text-mono-label mb-xs">
+<span class="text-on-surface-variant">TASK PROGRESS</span>
+<span class="text-tertiary">14/21 (68%)</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[68%]" style="box-shadow: 0 0 8px #4edea3aa;"></div>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant flex justify-between items-center">
+<div class="flex gap-lg">
+<div>
+<p class="font-mono-label text-[10px] text-outline">BURN RATE</p>
+<p class="font-mono-code text-mono-code text-primary">0.82 CR/m</p>
+</div>
+<div>
+<p class="font-mono-label text-[10px] text-outline">TOTAL SPEND</p>
+<p class="font-mono-code text-mono-code text-on-surface">1,402.12 CR</p>
+</div>
+</div>
+<div class="px-2 py-1 bg-secondary-container/20 text-secondary-container rounded font-mono-label text-[10px] animate-pulse">
+                            HITL REQUIRED
+                        </div>
+</div>
+</div>
+<!-- Project Card 2: Paused -->
+<div class="glass-panel flex flex-col p-md rounded-lg relative group transition-all opacity-80 hover:opacity-100 border-outline-variant/40">
+<div class="flex justify-between items-center mb-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-mono-code text-mono-code text-on-surface-variant">/projects/lambda_shadow/</span>
+</div>
+<button class="text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-secondary-fixed-dim mb-xs">Lambda Shadow</h3>
+<p class="text-on-surface-variant text-body-md mb-md">Edge computing wrapper for serverless deployments on dark infrastructure.</p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-2 py-0.5 bg-secondary-container/10 border border-secondary-container/20 text-secondary-container font-mono-label text-[10px] rounded">PAUSED: AUTH_WAIT</span>
+<span class="px-2 py-0.5 bg-surface-container-highest border border-outline-variant text-on-surface-variant font-mono-label text-[10px] rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">security</span> ZERO-TRUST-NET
+                            </span>
+</div>
+<div class="flex items-center gap-md py-2 px-3 bg-surface-container-high/50 rounded-lg grayscale opacity-50">
+<span class="text-xl">🕵️</span>
+<div>
+<p class="font-mono-label text-mono-label text-outline">ACTIVE AGENT</p>
+<p class="text-body-md text-on-surface font-semibold">Infra Auditor</p>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<div class="flex justify-between font-mono-label text-mono-label mb-xs">
+<span class="text-on-surface-variant">TASK PROGRESS</span>
+<span class="text-outline">9/42 (21%)</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-outline w-[21%]"></div>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant flex justify-between items-center">
+<div class="flex gap-lg">
+<div>
+<p class="font-mono-label text-[10px] text-outline">BURN RATE</p>
+<p class="font-mono-code text-mono-code text-outline-variant">0.00 CR/m</p>
+</div>
+<div>
+<p class="font-mono-label text-[10px] text-outline">TOTAL SPEND</p>
+<p class="font-mono-code text-mono-code text-on-surface">312.45 CR</p>
+</div>
+</div>
+<div class="px-2 py-1 bg-surface-container text-on-surface-variant rounded font-mono-label text-[10px]">
+                            SYSTEM IDLE
+                        </div>
+</div>
+</div>
+<!-- Project Card 3: Active with High Alert -->
+<div class="glass-panel active-glow flex flex-col p-md rounded-lg relative group transition-all border-error/30">
+<div class="flex justify-between items-center mb-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-error pulse-dot"></span>
+<span class="font-mono-code text-mono-code text-on-surface-variant">/projects/quantum_bridge/</span>
+</div>
+<button class="text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-primary mb-xs">Quantum Bridge</h3>
+<p class="text-on-surface-variant text-body-md mb-md">Interface for non-deterministic agent decision branching and pruning.</p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary font-mono-label text-[10px] rounded">ACTIVE DEVELOPMENT</span>
+<span class="px-2 py-0.5 bg-surface-container-highest border border-outline-variant text-on-surface-variant font-mono-label text-[10px] rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">auto_graph</span> HIGH-VAR-ALLOW
+                            </span>
+</div>
+<div class="flex items-center gap-md py-2 px-3 bg-surface-container-high/50 rounded-lg">
+<span class="text-xl">🧠</span>
+<div>
+<p class="font-mono-label text-mono-label text-outline">ACTIVE AGENT</p>
+<p class="text-body-md text-on-surface font-semibold">Synthesizer Alpha</p>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<div class="flex justify-between font-mono-label text-mono-label mb-xs">
+<span class="text-on-surface-variant">TASK PROGRESS</span>
+<span class="text-tertiary">38/40 (95%)</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[95%]" style="box-shadow: 0 0 8px #4edea3aa;"></div>
+</div>
+</div>
+<!-- Critical Alert Bar -->
+<div class="hitl-alert p-2 mb-md -mx-md mt-2">
+<p class="font-mono-label text-[10px] text-secondary flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+                            BRANCH CONFLICT: HITL APPROVAL REQ.
+                        </p>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant flex justify-between items-center">
+<div class="flex gap-lg">
+<div>
+<p class="font-mono-label text-[10px] text-outline">BURN RATE</p>
+<p class="font-mono-code text-mono-code text-primary">2.44 CR/m</p>
+</div>
+<div>
+<p class="font-mono-label text-[10px] text-outline">TOTAL SPEND</p>
+<p class="font-mono-code text-mono-code text-on-surface">8,990.00 CR</p>
+</div>
+</div>
+<button class="px-3 py-1 bg-secondary text-on-secondary font-bold rounded font-mono-label text-[10px] hover:brightness-110 transition-all">
+                            REVIEW
+                        </button>
+</div>
+</div>
+<!-- WebGL Shader Background Replacement for empty spots -->
+<div class="relative glass-panel rounded-lg overflow-hidden flex items-center justify-center min-h-[400px]">
+
+<div class="relative z-10 text-center flex flex-col items-center gap-md">
+<span class="material-symbols-outlined text-primary text-[48px] opacity-40">data_exploration</span>
+<p class="font-mono-code text-mono-code text-outline max-w-[200px]">Waiting for module initialization signal...</p>
+<button class="px-4 py-2 bg-surface-container-highest border border-outline-variant text-on-surface rounded hover:bg-surface-bright transition-colors">
+                            Initialize Unit
+                        </button>
+</div>
+</div>
+<!-- Project Card 4: New Deployment -->
+<div class="glass-panel flex flex-col p-md rounded-lg relative group transition-all hover:scale-[1.01] border-outline-variant/40">
+<div class="flex justify-between items-center mb-md">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span>
+<span class="font-mono-code text-mono-code text-on-surface-variant">/projects/synth_logs/</span>
+</div>
+<button class="text-outline-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Log Synthesizer</h3>
+<p class="text-on-surface-variant text-body-md mb-md">Internal utility for cleaning and classifying massive agent trace logs.</p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="px-2 py-0.5 bg-surface-container-highest border border-outline-variant text-outline font-mono-label text-[10px] rounded uppercase">Initializing</span>
+</div>
+<div class="flex items-center gap-md py-2 px-3 bg-surface-container-high/50 rounded-lg">
+<span class="text-xl">🧹</span>
+<div>
+<p class="font-mono-label text-mono-label text-outline">ACTIVE AGENT</p>
+<p class="text-body-md text-on-surface font-semibold">Janitor Bot v1.2</p>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<div class="flex justify-between font-mono-label text-mono-label mb-xs">
+<span class="text-on-surface-variant">SYNCING ASSETS</span>
+<span class="text-primary">45%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%] opacity-60"></div>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant flex justify-between items-center">
+<div class="flex gap-lg">
+<div>
+<p class="font-mono-label text-[10px] text-outline">BURN RATE</p>
+<p class="font-mono-code text-mono-code text-outline-variant">EST 0.1 CR/m</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="material-symbols-outlined text-[18px] text-outline animate-spin">refresh</span>
+</div>
+</div>
+</div>
+<!-- Add Project Card Placeholder -->
+<button class="group flex flex-col items-center justify-center border-2 border-dashed border-outline-variant hover:border-primary/40 hover:bg-primary/5 rounded-lg transition-all min-h-[400px]">
+<span class="material-symbols-outlined text-outline group-hover:text-primary text-[48px] mb-md transition-colors">add_circle</span>
+<p class="font-headline-md text-headline-md text-on-surface-variant group-hover:text-on-surface">Deploy Module</p>
+<p class="font-mono-label text-mono-label text-outline group-hover:text-primary/60 mt-sm">AIGENTIC_CLI --init project_name</p>
+</button>
+</div>
+</div>
+<!-- Footer / Status Bar -->
+<footer class="h-8 bg-surface-container-low border-t border-outline-variant flex items-center px-md justify-between">
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono-label text-[10px] text-on-surface">SYSTEM: OPERATIONAL</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[14px] text-outline">network_ping</span>
+<span class="font-mono-label text-[10px] text-outline">LATENCY: 12ms</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[14px] text-outline">database</span>
+<span class="font-mono-label text-[10px] text-outline">REGISTRY: 100% SYNCED</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-mono-label text-[10px] text-outline">ID: AF-X991-NODE-04</span>
+<span class="font-mono-label text-[10px] text-primary">v2.4.0-STABLE</span>
+</div>
+</footer>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        // Simple hover audio effect simulation (visual only)
+        const cards = document.querySelectorAll('.glass-panel');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Subtle lift on entry handled by tailwind scale
+            });
+        });
+
+        // Tab Switching logic (simulation)
+        const viewButtons = document.querySelectorAll('header button');
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Simplified UI state change
+                console.log('Switching view to:', this.innerText);
+            });
+        });
+    </script>
+</body></html>

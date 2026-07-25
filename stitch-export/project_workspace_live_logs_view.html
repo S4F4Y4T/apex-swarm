@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .status-pulse {
+            position: relative;
+        }
+        .status-pulse::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: currentColor;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px currentColor;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.2; }
+            100% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.8; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3d494c; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4cd7f6; }
+
+        .terminal-row:hover {
+            background: rgba(76, 215, 246, 0.03);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#131b2e",
+                        "surface-tint": "#4cd7f6",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-tertiary": "#003824",
+                        "tertiary": "#4edea3",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary-container": "#00452e",
+                        "on-secondary": "#472a00",
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "inverse-primary": "#00687a",
+                        "secondary": "#ffb95f",
+                        "surface-variant": "#2d3449",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "tertiary-container": "#1bbd85",
+                        "surface-dim": "#0b1326",
+                        "primary": "#4cd7f6",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "inverse-on-surface": "#283044",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-surface-variant": "#bcc9cd",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#2d3449",
+                        "on-tertiary-fixed": "#002113",
+                        "on-primary-container": "#00424f",
+                        "surface-container-high": "#222a3d",
+                        "on-secondary-fixed": "#2a1700",
+                        "primary-fixed": "#acedff",
+                        "on-primary": "#003640",
+                        "surface-container-lowest": "#060e20",
+                        "outline": "#869397",
+                        "primary-container": "#06b6d4",
+                        "on-background": "#dae2fd",
+                        "on-secondary-container": "#5b3800",
+                        "inverse-surface": "#dae2fd",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-surface": "#dae2fd",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "background": "#0b1326",
+                        "secondary-fixed": "#ffddb8",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-bright": "#31394d",
+                        "secondary-container": "#ee9800",
+                        "surface": "#0b1326",
+                        "outline-variant": "#3d494c",
+                        "surface-container": "#171f33"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "xl": "48px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "display": ["Inter"],
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "mono-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "mono-code": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary/30 overflow-hidden h-screen flex flex-col font-body-md text-body-md">
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-md border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-lg">
+<span class="font-display text-headline-lg font-black text-primary tracking-tighter">Aigentic Factory</span>
+<div class="hidden md:flex items-center gap-md ml-lg">
+<span class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors cursor-pointer font-mono-label text-mono-label">Network</span>
+<span class="text-primary font-bold border-b-2 border-primary pb-1 font-mono-label text-mono-label">Registry</span>
+<span class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors cursor-pointer font-mono-label text-mono-label">Vault</span>
+</div>
+</div>
+<div class="flex-1 max-w-xl mx-lg hidden md:block">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-lg pl-10 pr-4 py-2 text-on-surface focus:ring-1 focus:ring-primary placeholder:text-outline/50 transition-all" placeholder="Search logs, agents, or traces..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-lg flex items-center gap-2 font-mono-label text-mono-label scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+                HITL Alerts
+            </button>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">radio_button_checked</span></button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-2">
+<img class="w-full h-full object-cover" data-alt="A cinematic, ultra-detailed profile portrait of a high-tech chief architect in a dark futuristic environment. The lighting is dominated by cyan and amber glow from various computer terminals. The person wears a sleek charcoal tactical turtleneck. The style is hyper-realistic, dark factory aesthetic with shallow depth of field and sharp focus on the eye." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjsTprSpQ74hoUBLqmOQU-leFM4gSvZRxBwvNtxqLZPPZrn4DVMLv7dnwCaPsPFjBf1EliOwKsjHZE2uUqsHIH2trGzFOSNkxMrdXZQrEntw_6iFbvn1GJryfGvFv2rmX-kYLoL5LyHSGVYSCqIrpm5UvyXFPGtbZ8dBQ0NwduHp0xt-iYm0GG4pEVXhWN3flehvl2CriR4c-yLkc4RMwKG5oQkMh-YUT4-WH35MT56dX43CnXE27J3NI7zla9qWG3JO6AETfSCoY"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant shrink-0">
+<div class="p-lg border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">account_tree</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight">JSRM ERP</h2>
+<p class="text-on-surface-variant font-mono-label text-[10px] tracking-widest uppercase">Autonomous v2.4</p>
+</div>
+</div>
+<button class="w-full mt-lg bg-primary text-on-primary font-bold py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary-container">
+<span class="material-symbols-outlined">add</span>
+                    Deploy New Agent
+                </button>
+</div>
+<nav class="flex-1 py-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-md px-lg py-3 text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</div>
+<div class="flex items-center gap-md px-lg py-3 text-primary font-bold border-r-2 border-primary bg-primary/5 transition-all cursor-pointer">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-body-md">Projects</span>
+</div>
+<div class="flex items-center gap-md px-lg py-3 text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md">Billing</span>
+</div>
+<div class="flex items-center gap-md px-lg py-3 text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</div>
+</div>
+</nav>
+<div class="p-md border-t border-outline-variant">
+<div class="flex flex-col">
+<div class="flex items-center gap-md px-lg py-2 text-on-surface-variant hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="font-body-md">Docs</span>
+</div>
+<div class="flex items-center gap-md px-lg py-2 text-on-surface-variant hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-body-md">Support</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col bg-background relative">
+<!-- View Tabs -->
+<div class="flex items-center gap-sm px-gutter border-b border-outline-variant bg-surface-container-lowest">
+<button class="px-lg py-3 font-mono-label text-on-surface-variant border-b-2 border-transparent hover:text-on-surface transition-colors">Overview</button>
+<button class="px-lg py-3 font-mono-label text-on-surface-variant border-b-2 border-transparent hover:text-on-surface transition-colors">Infrastructure</button>
+<button class="px-lg py-3 font-mono-label text-primary border-b-2 border-primary bg-primary/5">Live Logs</button>
+<button class="px-lg py-3 font-mono-label text-on-surface-variant border-b-2 border-transparent hover:text-on-surface transition-colors">Traces</button>
+<div class="flex-1"></div>
+<div class="flex items-center gap-2 text-tertiary">
+<div class="w-2 h-2 rounded-full bg-tertiary status-pulse"></div>
+<span class="font-mono-label text-xs uppercase tracking-widest">System Active</span>
+</div>
+</div>
+<!-- Log Filters Bar -->
+<div class="flex flex-wrap items-center gap-md p-md bg-surface-container border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="text-on-surface-variant text-xs uppercase font-mono-label">Agent:</span>
+<div class="relative group">
+<button class="flex items-center gap-2 bg-surface-container-high border border-outline-variant px-3 py-1 rounded text-on-surface text-sm">
+                            All agents
+                            <span class="material-symbols-outlined text-xs">expand_more</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="text-on-surface-variant text-xs uppercase font-mono-label">Level:</span>
+<div class="relative">
+<button class="flex items-center gap-2 bg-surface-container-high border border-outline-variant px-3 py-1 rounded text-on-surface text-sm">
+                            All levels
+                            <span class="material-symbols-outlined text-xs">expand_more</span>
+</button>
+</div>
+</div>
+<div class="flex-1">
+<div class="relative max-w-sm">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-xs text-outline">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded px-8 py-1 text-sm focus:ring-1 focus:ring-primary focus:border-primary" placeholder="Filter logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 hover:bg-surface-bright rounded text-on-surface-variant"><span class="material-symbols-outlined">filter_list</span></button>
+<button class="p-1.5 hover:bg-surface-bright rounded text-on-surface-variant"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</div>
+<!-- Terminal Content -->
+<div class="flex-1 overflow-y-auto bg-[#000000] p-md font-mono-code text-mono-code relative">
+<div class="space-y-1.5">
+<!-- Log entries -->
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors">
+<span class="text-outline/40 whitespace-nowrap">14:32:07</span>
+<span class="text-primary/70 uppercase w-20 text-[11px] font-bold">Developer</span>
+<span class="text-tertiary bg-tertiary/10 px-1 rounded text-[10px] font-bold">INFO</span>
+<span class="text-on-surface/90">Generated internal/user/svc.go</span>
+</div>
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors">
+<span class="text-outline/40 whitespace-nowrap">14:32:11</span>
+<span class="text-primary/70 uppercase w-20 text-[11px] font-bold">Developer</span>
+<span class="text-tertiary bg-tertiary/10 px-1 rounded text-[10px] font-bold">INFO</span>
+<span class="text-on-surface/90">Running go vet…</span>
+</div>
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors">
+<span class="text-outline/40 whitespace-nowrap">14:32:12</span>
+<span class="text-secondary/70 uppercase w-20 text-[11px] font-bold">Auditor</span>
+<span class="text-secondary bg-secondary/10 px-1 rounded text-[10px] font-bold">WARN</span>
+<span class="text-secondary/90">Missing error wrap in <span class="underline cursor-pointer">repo.go:44</span></span>
+</div>
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors">
+<span class="text-outline/40 whitespace-nowrap">14:32:14</span>
+<span class="text-primary/70 uppercase w-20 text-[11px] font-bold">Developer</span>
+<span class="text-tertiary bg-tertiary/10 px-1 rounded text-[10px] font-bold">INFO</span>
+<span class="text-on-surface/90">Applied fix, re-running vet</span>
+</div>
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors">
+<span class="text-outline/40 whitespace-nowrap">14:32:30</span>
+<span class="text-primary/70 uppercase w-20 text-[11px] font-bold">Tester</span>
+<span class="text-tertiary bg-tertiary/10 px-1 rounded text-[10px] font-bold">INFO</span>
+<span class="text-on-surface/90">3/3 unit tests passed</span>
+</div>
+<!-- HITL Entry -->
+<div class="my-lg border-y border-secondary/20 bg-secondary/5 p-md relative overflow-hidden group">
+<div class="absolute left-0 top-0 w-1 h-full bg-secondary"></div>
+<div class="flex items-center gap-4">
+<span class="text-outline/40 font-mono-code">14:33:01</span>
+<span class="text-secondary uppercase w-20 text-[11px] font-bold">Zeroclaw</span>
+<span class="bg-secondary text-on-secondary px-1.5 rounded text-[10px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">pan_tool</span>
+                                HITL
+                            </span>
+<span class="text-secondary font-bold">Paused: awaiting approval on schema migration</span>
+<div class="flex-1"></div>
+<div class="flex items-center gap-2">
+<button class="bg-secondary/20 hover:bg-secondary/30 text-secondary border border-secondary/40 px-3 py-1 rounded-sm text-[11px] font-bold uppercase transition-all">Review Diff</button>
+<button class="bg-secondary hover:bg-secondary-container text-on-secondary px-3 py-1 rounded-sm text-[11px] font-bold uppercase shadow-[0_0_15px_rgba(255,185,95,0.3)] transition-all">Approve Migration</button>
+</div>
+</div>
+</div>
+<!-- Subsequent Logs -->
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors">
+<span class="text-outline/40 whitespace-nowrap">14:33:45</span>
+<span class="text-primary/70 uppercase w-20 text-[11px] font-bold">System</span>
+<span class="text-tertiary bg-tertiary/10 px-1 rounded text-[10px] font-bold">INFO</span>
+<span class="text-on-surface/90">Keep-alive signal received from worker-node-04</span>
+</div>
+<div class="flex items-start gap-4 terminal-row px-2 py-0.5 transition-colors opacity-50">
+<span class="text-outline/40 whitespace-nowrap">14:34:02</span>
+<span class="text-primary/70 uppercase w-20 text-[11px] font-bold">System</span>
+<span class="text-outline/40 bg-surface-variant px-1 rounded text-[10px] font-bold">DEBUG</span>
+<span class="text-on-surface/90">Allocated buffer: 4096 bytes</span>
+</div>
+<!-- Live Indicator -->
+<div class="flex items-center gap-2 px-2 py-2">
+<span class="text-primary animate-pulse font-bold text-lg leading-none">_</span>
+<span class="text-primary/40 font-mono-label text-[10px] uppercase tracking-widest">Awaiting system input...</span>
+</div>
+</div>
+</div>
+<!-- Workspace Footer / Control Bar -->
+<footer class="h-12 bg-surface-container-high border-t border-outline-variant flex items-center justify-between px-gutter">
+<div class="flex items-center gap-lg">
+<label class="flex items-center gap-3 cursor-pointer group">
+<span class="text-mono-label text-[11px] uppercase tracking-wider text-on-surface-variant group-hover:text-primary transition-colors">Auto-scroll:</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</div>
+<span class="text-primary text-[11px] font-bold">ON</span>
+</label>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-3 text-on-surface-variant text-[11px] font-mono-label uppercase">
+<span>Buffer: 1,452 lines</span>
+<span>Load: 0.12ms/log</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-2 px-4 py-1.5 rounded bg-surface-container-highest hover:bg-surface-bright text-on-surface-variant transition-all border border-outline-variant text-xs font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[18px]">description</span>
+                        Copy Logs
+                    </button>
+<button class="flex items-center gap-2 px-4 py-1.5 rounded bg-primary text-on-primary hover:bg-primary-container transition-all text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export
+                    </button>
+</div>
+</footer>
+</main>
+</div>
+<!-- Bottom Status Strip -->
+<div class="h-8 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-gutter shrink-0 z-50">
+<div class="flex items-center gap-md text-[10px] font-mono-label uppercase tracking-widest text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Mainnet Online</span>
+</div>
+<div class="h-3 w-px bg-outline-variant/30"></div>
+<div class="flex items-center gap-1.5">
+<span>Latency: <span class="text-tertiary">24ms</span></span>
+</div>
+<div class="h-3 w-px bg-outline-variant/30"></div>
+<div class="flex items-center gap-1.5">
+<span>Token Usage: <span class="text-secondary">42.4k</span></span>
+</div>
+</div>
+<div class="flex items-center gap-lg text-[10px] font-mono-label uppercase tracking-widest text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">terminal</span> SSH: Active</span>
+<span class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-[14px]">cloud_sync</span> Sync: Ready</span>
+<span class="text-outline">v2.4.0-stable</span>
+</div>
+</div>
+<script>
+        // Micro-interaction for logs: simulated append
+        const logContainer = document.querySelector('.terminal-content');
+        
+        // Simple click interaction for HITL buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const ripple = document.createElement('div');
+                ripple.className = 'absolute bg-white/20 rounded-full animate-ping';
+                ripple.style.width = '10px';
+                ripple.style.height = '10px';
+                ripple.style.left = e.offsetX + 'px';
+                ripple.style.top = e.offsetY + 'px';
+                btn.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 1000);
+            });
+        });
+
+        // Search highlight logic
+        const searchInput = document.querySelector('input[placeholder="Filter logs..."]');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.terminal-row');
+            rows.forEach(row => {
+                if (row.textContent.toLowerCase().includes(term)) {
+                    row.style.display = 'flex';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body></html>

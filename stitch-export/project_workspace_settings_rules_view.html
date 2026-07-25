@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JSRM ERP - Factory Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-container-low": "#131b2e",
+                "surface-tint": "#4cd7f6",
+                "tertiary-fixed-dim": "#4edea3",
+                "on-tertiary": "#003824",
+                "tertiary": "#4edea3",
+                "on-primary-fixed": "#001f26",
+                "on-tertiary-container": "#00452e",
+                "on-secondary": "#472a00",
+                "on-error": "#690005",
+                "on-primary-fixed-variant": "#004e5c",
+                "inverse-primary": "#00687a",
+                "secondary": "#ffb95f",
+                "surface-variant": "#2d3449",
+                "secondary-fixed-dim": "#ffb95f",
+                "tertiary-container": "#1bbd85",
+                "surface-dim": "#0b1326",
+                "primary": "#4cd7f6",
+                "on-secondary-fixed-variant": "#653e00",
+                "inverse-on-surface": "#283044",
+                "tertiary-fixed": "#6ffbbe",
+                "on-surface-variant": "#bcc9cd",
+                "on-error-container": "#ffdad6",
+                "surface-container-highest": "#2d3449",
+                "on-tertiary-fixed": "#002113",
+                "on-primary-container": "#00424f",
+                "surface-container-high": "#222a3d",
+                "on-secondary-fixed": "#2a1700",
+                "primary-fixed": "#acedff",
+                "on-primary": "#003640",
+                "surface-container-lowest": "#060e20",
+                "outline": "#869397",
+                "primary-container": "#06b6d4",
+                "on-background": "#dae2fd",
+                "on-secondary-container": "#5b3800",
+                "inverse-surface": "#dae2fd",
+                "primary-fixed-dim": "#4cd7f6",
+                "on-surface": "#dae2fd",
+                "error-container": "#93000a",
+                "error": "#ffb4ab",
+                "background": "#0b1326",
+                "secondary-fixed": "#ffddb8",
+                "on-tertiary-fixed-variant": "#005236",
+                "surface-bright": "#31394d",
+                "secondary-container": "#ee9800",
+                "surface": "#0b1326",
+                "outline-variant": "#3d494c",
+                "surface-container": "#171f33"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+              },
+              "spacing": {
+                "unit": "4px",
+                "margin-mobile": "16px",
+                "xl": "48px",
+                "md": "16px",
+                "lg": "24px",
+                "margin-desktop": "32px",
+                "gutter": "16px",
+                "xs": "4px",
+                "sm": "8px"
+              },
+              "fontFamily": {
+                "headline-md": ["Inter"],
+                "body-lg": ["Inter"],
+                "mono-label": ["JetBrains Mono"],
+                "display": ["Inter"],
+                "mono-code": ["JetBrains Mono"],
+                "headline-lg": ["Inter"],
+                "body-md": ["Inter"]
+              },
+              "fontSize": {
+                "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "mono-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "mono-code": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .active-glow {
+            box-shadow: 0 0 15px rgba(76, 215, 246, 0.15);
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .5; transform: scale(1.2); }
+        }
+        .scroll-hide::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-hidden h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-50 bg-surface/80 dark:bg-surface/80 backdrop-blur-md border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-lg">
+<span class="font-display text-headline-lg font-black text-primary tracking-tighter">Aigentic Factory</span>
+<div class="hidden md:flex items-center gap-md">
+<nav class="flex gap-lg">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors font-mono-label text-mono-label" href="#">Network</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors font-mono-label text-mono-label" href="#">Registry</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors font-mono-label text-mono-label" href="#">Vault</a>
+</nav>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-secondary-container text-on-secondary-fixed font-mono-label text-mono-label px-md py-xs rounded-lg hover:brightness-110 transition-all uppercase tracking-widest scale-95 active:scale-90">
+                HITL Alerts
+            </button>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer p-xs">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer p-xs">radio_button_checked</span>
+<div class="w-8 h-8 rounded-full border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional close-up portrait of a Chief Architect in a high-tech laboratory environment. The lighting is dramatic and moody, utilizing deep blues and sharp cyan highlights that reflect off glass screens. The architect has a focused expression, wearing sleek technical attire. The background is filled with blurred data visualization displays and architectural wireframes in a Dark Factory aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_X_W4o6oxd9TqBJQ1SAnX1_iqSe-LoZouFZkagyjg-mENCI-dMFIFThXoTU_InulaV5FzpaUdj-8cQ4CDjK8ZqLeCx1DKO0ml1c2PHU42v0KARBdTUImITEw3r3HM2ltmGKkF4-JCp6eqzox3D8ZnfVyyEP21qrGpuw2bepD0y3_I-wJYF7KXd3q9NE4y3bflqsiAeX7DIJTe8JU6r9hnV0Pie1Og8qGJgDWur3xTOBVaqVKkYcJSgUpTU077klCg7-UznO1-aq4"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar (Left Rail) -->
+<aside class="flex flex-col h-full w-64 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant transition-all duration-200 ease-in-out z-40">
+<div class="p-lg flex flex-col gap-xs">
+<div class="flex items-center gap-sm mb-lg">
+<div class="w-10 h-10 bg-primary/20 rounded flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined text-primary">factory</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md leading-none text-primary">Aigentic</div>
+<div class="font-mono-label text-[10px] text-on-surface-variant">v2.4 Autonomous</div>
+</div>
+</div>
+<nav class="flex flex-col gap-xs">
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-bright dark:hover:bg-surface-bright hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-bright dark:hover:bg-surface-bright hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-body-md text-body-md">Projects</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-bright dark:hover:bg-surface-bright hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Billing</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-primary dark:text-primary font-bold border-r-2 border-primary bg-surface-bright/50" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-lg flex flex-col gap-xs">
+<button class="w-full bg-primary text-on-primary font-bold py-md rounded-lg mb-lg hover:brightness-110 active:scale-[0.98] transition-all">
+                    Deploy New Agent
+                </button>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-body-md text-body-md">Docs</span>
+</a>
+<a class="flex items-center gap-md p-md rounded-lg text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background">
+<!-- View Tabs & Breadcrumbs -->
+<div class="h-14 border-b border-outline-variant flex items-center px-lg bg-surface-container-lowest/50 justify-between">
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<span class="font-mono-label text-mono-label text-on-surface-variant">WORKSPACE</span>
+<span class="text-outline-variant">/</span>
+<span class="font-mono-label text-mono-label text-primary">JSRM ERP</span>
+</div>
+<div class="h-6 w-px bg-outline-variant"></div>
+<nav class="flex gap-lg">
+<button class="text-on-surface-variant hover:text-primary font-mono-label text-mono-label transition-colors">OVERVIEW</button>
+<button class="text-on-surface-variant hover:text-primary font-mono-label text-mono-label transition-colors">INFRASTRUCTURE</button>
+<button class="text-on-surface-variant hover:text-primary font-mono-label text-mono-label transition-colors">AGENTS</button>
+<button class="text-primary font-bold font-mono-label text-mono-label border-b border-primary pt-1">SETTINGS</button>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<div class="status-pulse w-2 h-2 rounded-full bg-tertiary"></div>
+<span class="font-mono-label text-mono-label text-tertiary uppercase tracking-wider">Sync Active</span>
+</div>
+</div>
+<!-- Banner Notification -->
+<div class="mx-lg mt-md">
+<div class="bg-secondary/10 border border-secondary/20 p-md flex items-center gap-md rounded-lg">
+<span class="material-symbols-outlined text-secondary">info</span>
+<p class="text-body-md font-body-md text-secondary">
+                        Changes apply to new tasks — <span class="font-bold underline">2 tasks</span> already in progress will finish under the previous rules.
+                    </p>
+<button class="ml-auto text-secondary/60 hover:text-secondary">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Content Panel -->
+<div class="flex-1 flex overflow-hidden p-lg gap-lg">
+<!-- Settings Left Sub-nav -->
+<div class="w-64 flex flex-col gap-sm shrink-0">
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-xs px-md">FACTORY CONFIG</div>
+<button class="flex items-center justify-between p-md rounded-lg bg-primary/10 text-primary border border-primary/20 transition-all group">
+<span class="flex items-center gap-md">
+<span class="material-symbols-outlined">gavel</span>
+<span class="font-body-md text-body-md font-semibold">Factory Rules</span>
+</span>
+<span class="material-symbols-outlined text-primary/40 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-md rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all group">
+<span class="flex items-center gap-md">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Agent Roster</span>
+</span>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-md rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all group">
+<span class="flex items-center gap-md">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md text-body-md">Approval Policy</span>
+</span>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-md rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all group">
+<span class="flex items-center gap-md">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-body-md text-body-md">Notifications</span>
+</span>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</button>
+<div class="my-md h-px bg-outline-variant mx-md"></div>
+<button class="flex items-center gap-md p-md rounded-lg text-error hover:bg-error/10 transition-all group">
+<span class="material-symbols-outlined">dangerous</span>
+<span class="font-body-md text-body-md">Danger Zone</span>
+</button>
+</div>
+<!-- Settings Content (Factory Rules) -->
+<div class="flex-1 glass-panel rounded-xl overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-high/30">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Factory Rules</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Define core behavioral skill modules for all autonomous agents in this workspace.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-lg py-sm border border-outline-variant rounded-lg text-on-surface hover:bg-surface-bright transition-all font-mono-label text-mono-label">DISCARD</button>
+<button class="px-lg py-sm bg-primary text-on-primary rounded-lg font-bold transition-all hover:shadow-[0_0_15px_rgba(76,215,246,0.3)]">SAVE CHANGES</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-lg scroll-hide">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<!-- Company Profile Module -->
+<div class="border border-outline-variant rounded-lg p-lg bg-surface-container-low/40 hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">business_center</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md">Company Profile</div>
+<div class="font-mono-label text-mono-label text-primary uppercase">v4.2 PROD</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-md">
+<div>
+<label class="font-mono-label text-mono-label text-on-surface-variant block mb-xs">ENTITY NAME</label>
+<input class="w-full bg-surface-container-highest border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-body-md p-md" type="text" value="JSRM Enterprises Ltd."/>
+</div>
+<div>
+<label class="font-mono-label text-mono-label text-on-surface-variant block mb-xs">MISSION SCOPE</label>
+<textarea class="w-full bg-surface-container-highest border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-body-md p-md resize-none" rows="3">Enterprise resource planning automation with a focus on supply chain transparency and autonomous fiscal reconciliation.</textarea>
+</div>
+</div>
+</div>
+<!-- Brand Guidelines Module -->
+<div class="border border-outline-variant rounded-lg p-lg bg-surface-container-low/40 hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">palette</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md">Brand Guidelines</div>
+<div class="font-mono-label text-mono-label text-tertiary uppercase">LATEST SYNC: 2H AGO</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary"></div>
+</label>
+</div>
+<div class="space-y-md">
+<div class="flex items-center gap-md p-md bg-surface-container-highest rounded-lg border border-outline-variant/50">
+<div class="w-12 h-12 rounded bg-white p-xs">
+<img class="w-full h-full object-contain" data-alt="A minimalist vector logo of a geometric 'J' inside a hexagonal frame. The design is sleek and professional, utilizing sharp lines and a high-contrast black-on-white aesthetic. It represents industrial precision and architectural strength, perfectly suited for an ERP factory branding system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgIONuz-CGRBMhPZtHlzEFPEGttu_UzdKJvdDEYqMUXFAoPCutiJdWF7Pn4SxHtC-NZ4qfbdqF4lWXh4O7W8ZAXJ9veuzeTgxCuiN2PzDUuAoPPOsX_Tm1f9M8CRk1l6cF7PxZGAOA_j5vCw-xw27JF4StUDQNEC2icRMGI1yo9o7EaNscVCCiwEkwHMGKxXw1VOQqOyz6MFEPEhGVizB92aKypNcsvDog8rIWh4mTV3lYR6aXNV4DAQlNDM6UWFqfa5PvuUvru6U"/>
+</div>
+<div class="flex-1">
+<div class="font-mono-label text-mono-label text-on-surface">JSRM_Logo_Dark.svg</div>
+<div class="font-mono-label text-[10px] text-on-surface-variant uppercase">Vector Asset • 24.5 KB</div>
+</div>
+<button class="text-primary material-symbols-outlined">edit</button>
+</div>
+<div>
+<label class="font-mono-label text-mono-label text-on-surface-variant block mb-xs">VOICE &amp; TONE</label>
+<select class="w-full bg-surface-container-highest border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-body-md p-md">
+<option>Technical Professional (High Density)</option>
+<option>Friendly Assistant</option>
+<option>Strictly Formal</option>
+</select>
+</div>
+</div>
+</div>
+<!-- SDLC Protocol Module -->
+<div class="border border-outline-variant rounded-lg p-lg bg-surface-container-low/40 hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">terminal</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md">SDLC Protocol</div>
+<div class="font-mono-label text-mono-label text-primary uppercase">MANDATORY</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" disabled="" type="checkbox"/>
+<div class="w-11 h-6 bg-primary opacity-50 rounded-full after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:rounded-full after:h-5 after:w-5"></div>
+</label>
+</div>
+<div class="space-y-md">
+<div class="flex flex-col gap-sm">
+<label class="font-mono-label text-mono-label text-on-surface-variant">STRICTNESS LEVEL</label>
+<input class="w-full accent-primary bg-surface-variant rounded-lg h-2" max="5" min="1" type="range" value="4"/>
+<div class="flex justify-between font-mono-label text-[10px] text-outline">
+<span>FLEXIBLE</span>
+<span>STRICT</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md rounded-lg bg-surface-container-highest border border-outline-variant">
+<div class="font-mono-label text-[10px] text-on-surface-variant mb-xs">UNIT TESTS</div>
+<div class="font-body-md text-tertiary">ENFORCED</div>
+</div>
+<div class="p-md rounded-lg bg-surface-container-highest border border-outline-variant">
+<div class="font-mono-label text-[10px] text-on-surface-variant mb-xs">DOCS GENERATION</div>
+<div class="font-body-md text-tertiary">ENFORCED</div>
+</div>
+</div>
+</div>
+</div>
+<!-- DDaS Settings Module -->
+<div class="border border-outline-variant rounded-lg p-lg bg-surface-container-low/40 hover:border-primary/40 transition-colors">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">database</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md">DDaS Integration</div>
+<div class="font-mono-label text-mono-label text-secondary uppercase">Data-Delivery-as-Service</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex items-center justify-center p-xl border-2 border-dashed border-outline-variant rounded-lg">
+<div class="text-center">
+<span class="material-symbols-outlined text-outline text-4xl mb-md">link_off</span>
+<p class="font-body-md text-on-surface-variant">Module currently inactive. <br/><span class="text-primary hover:underline cursor-pointer">Sync External API</span> to begin.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Status Strip (Bottom Bar) -->
+<footer class="h-10 bg-surface-container-lowest border-t border-outline-variant flex items-center px-lg justify-between text-mono-label font-mono-label">
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-xs">
+<span class="text-on-surface-variant">WORKSPACE STATUS:</span>
+<span class="text-tertiary">STABLE</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-on-surface-variant">ACTIVE AGENTS:</span>
+<span class="text-primary">12 / 15</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-on-surface-variant">LATENCY:</span>
+<span class="text-on-surface">42ms</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="text-outline uppercase">Build: j82-beta-09</span>
+<div class="h-3 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-xs text-on-surface-variant hover:text-primary cursor-pointer">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+<span>Open Factory Logs</span>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple UI Interaction: Toggle side nav width (visual representation of depth)
+        const toggles = document.querySelectorAll('input[type="checkbox"]');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const parent = e.target.closest('.border-outline-variant');
+                if (e.target.checked) {
+                    parent.classList.add('active-glow');
+                } else {
+                    parent.classList.remove('active-glow');
+                }
+            });
+        });
+
+        // Simulating auto-save notification
+        let saveTimeout;
+        const saveButton = document.querySelector('.bg-primary');
+        saveButton.addEventListener('click', () => {
+            const originalText = saveButton.innerText;
+            saveButton.innerText = "SAVING...";
+            saveButton.classList.add('opacity-80');
+            
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveButton.innerText = "SAVED ✓";
+                saveButton.classList.remove('bg-primary');
+                saveButton.classList.add('bg-tertiary', 'text-on-tertiary');
+                
+                setTimeout(() => {
+                    saveButton.innerText = originalText;
+                    saveButton.classList.remove('bg-tertiary', 'text-on-tertiary', 'opacity-80');
+                    saveButton.classList.add('bg-primary');
+                }, 2000);
+            }, 800);
+        });
+    </script>
+</body></html>

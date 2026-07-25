@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Telemetry | Cattlesync Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#060e20",
+                    "on-primary-fixed": "#001f26",
+                    "surface-container-highest": "#2d3449",
+                    "on-secondary-fixed-variant": "#653e00",
+                    "secondary-fixed-dim": "#ffb95f",
+                    "on-tertiary": "#003824",
+                    "on-secondary-container": "#5b3800",
+                    "surface-container-high": "#222a3d",
+                    "on-tertiary-fixed": "#002113",
+                    "surface": "#0b1326",
+                    "surface-bright": "#31394d",
+                    "secondary": "#ffb95f",
+                    "on-surface-variant": "#bcc9cd",
+                    "tertiary-container": "#1bbd85",
+                    "on-primary-container": "#00424f",
+                    "primary": "#4cd7f6",
+                    "primary-fixed": "#acedff",
+                    "surface-variant": "#2d3449",
+                    "secondary-fixed": "#ffddb8",
+                    "primary-fixed-dim": "#4cd7f6",
+                    "background": "#0b1326",
+                    "primary-container": "#06b6d4",
+                    "surface-container-low": "#131b2e",
+                    "on-primary": "#003640",
+                    "on-secondary": "#472a00",
+                    "surface-tint": "#4cd7f6",
+                    "on-error": "#690005",
+                    "inverse-on-surface": "#283044",
+                    "inverse-primary": "#00687a",
+                    "outline-variant": "#3d494c",
+                    "on-surface": "#dae2fd",
+                    "inverse-surface": "#dae2fd",
+                    "surface-container": "#171f33",
+                    "error": "#ffb4ab",
+                    "surface-dim": "#0b1326",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "outline": "#869397",
+                    "on-secondary-fixed": "#2a1700",
+                    "on-error-container": "#ffdad6",
+                    "tertiary": "#4edea3",
+                    "on-primary-fixed-variant": "#004e5c",
+                    "tertiary-fixed": "#6ffbbe",
+                    "on-tertiary-container": "#00452e",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-background": "#dae2fd",
+                    "secondary-container": "#ee9800"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "margin-desktop": "32px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "xl": "48px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "mono-code": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "display": ["Inter"],
+                    "mono-label": ["JetBrains Mono"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "mono-code": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "mono-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #020617;
+            color: #dae2fd;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .active-glow {
+            box-shadow: 0 0 15px -3px rgba(76, 215, 246, 0.15);
+        }
+        .status-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.4; transform: scale(1); }
+        }
+        .terminal-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .terminal-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #2d3449;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-hidden">
+<!-- Sidebar (Shared Component Anchor) -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 docked left-0 h-full w-64 bg-surface-container-low border-r border-outline-variant z-50 transition-all duration-200 ease-in-out">
+<div class="p-lg flex flex-col gap-sm">
+<h1 class="font-display text-display font-bold text-primary tracking-tighter leading-none">Aigentic Factory</h1>
+<span class="font-mono-label text-mono-label text-on-surface-variant opacity-70">Autonomous v2.4</span>
+</div>
+<nav class="flex-1 mt-lg px-md space-y-unit">
+<a class="flex items-center gap-md px-md py-sm rounded transition-all duration-200 ease-in-out text-primary font-bold border-r-2 border-primary bg-surface-bright/20" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded transition-all duration-200 ease-in-out text-on-surface-variant hover:bg-surface-bright hover:text-primary" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-body-md text-body-md">Projects</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded transition-all duration-200 ease-in-out text-on-surface-variant hover:bg-surface-bright hover:text-primary" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Billing</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded transition-all duration-200 ease-in-out text-on-surface-variant hover:bg-surface-bright hover:text-primary" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-md py-lg space-y-md">
+<button class="w-full bg-primary-container text-on-primary-container py-sm font-bold rounded hover:opacity-90 transition-opacity">
+                Deploy New Agent
+            </button>
+<div class="space-y-xs">
+<a class="flex items-center gap-md px-md py-xs text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">description</span>
+<span class="font-mono-label text-mono-label">Docs</span>
+</a>
+<a class="flex items-center gap-md px-md py-xs text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+<span class="font-mono-label text-mono-label">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 h-screen flex flex-col overflow-y-auto">
+<!-- Top Nav (Shared Component Anchor) -->
+<header class="flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<h2 class="font-headline-sm text-headline-sm font-black text-primary tracking-tight">Project Telemetry: Cattlesync Platform</h2>
+<div class="flex items-center gap-xs ml-md px-sm py-[2px] bg-tertiary/10 border border-tertiary/20 rounded-full">
+<span class="w-2 h-2 bg-tertiary rounded-full status-pulse"></span>
+<span class="font-mono-label text-[10px] text-tertiary uppercase tracking-widest font-bold">Live</span>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-lg">
+<a class="font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors" href="#">Network</a>
+<a class="font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors" href="#">Registry</a>
+<a class="font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors" href="#">Vault</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-secondary-container text-on-secondary-container px-md py-sm font-mono-label text-mono-label font-bold rounded flex items-center gap-sm scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-sm">warning</span>
+                    HITL Alerts
+                </button>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<button class="material-symbols-outlined p-xs hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined p-xs hover:text-primary transition-colors">radio_button_checked</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional high-resolution close-up portrait of a Chief Architect in a dark, tech-focused environment. The lighting is cold and atmospheric with blue and cyan reflections from surrounding monitors. The individual has a focused, expert expression, wearing modern technical apparel. The background is a blurred high-tech data center with servers and wiring." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAISRsAirh2nXzOCeXwvsCE2p4N49oiN0aiSTQxDl4GUB9Wzn29qmg9cJ6DyklB9YPrA9FeG7LUqg8eLbzp6iOMhLiTFaqV0MGSHvX1Zh4BXhIcJ4bfKA9bPYpiSDaDCo73ERNfWkKGLJTO5cOXc26taaumBf0dnsBCuGDEm1fEfmJ8dSZLZNsOWye2NcgFRspAOafmIWZj6_Dw2XiiN2M070DHE9lojwnvdHt8T00RpKGtZR8t2xx850QP_FWLsV_KkymHdhXemk"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Telemetry Workspace -->
+<div class="p-margin-desktop space-y-lg max-w-[1600px] mx-auto w-full">
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<!-- Card 1: Credit Spend -->
+<div class="glass-panel p-md rounded-xl active-glow">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Total Credit Spend</span>
+<span class="material-symbols-outlined text-primary text-md">payments</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-mono-code text-display text-primary leading-none">1,420</span>
+<span class="font-mono-label text-mono-label text-primary/60">CR</span>
+</div>
+<div class="mt-md h-12 w-full flex items-end gap-[2px]">
+<!-- Simple CSS Sparkline -->
+<div class="flex-1 bg-primary/20 h-[30%]"></div>
+<div class="flex-1 bg-primary/20 h-[45%]"></div>
+<div class="flex-1 bg-primary/20 h-[40%]"></div>
+<div class="flex-1 bg-primary/20 h-[60%]"></div>
+<div class="flex-1 bg-primary/20 h-[55%]"></div>
+<div class="flex-1 bg-primary/20 h-[80%]"></div>
+<div class="flex-1 bg-primary/40 h-[70%]"></div>
+<div class="flex-1 bg-primary/60 h-[90%]"></div>
+<div class="flex-1 bg-primary h-full"></div>
+</div>
+</div>
+<!-- Card 2: SDK Execution -->
+<div class="glass-panel p-md rounded-xl">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">SDK Execution Time</span>
+<span class="material-symbols-outlined text-on-surface-variant text-md">timer</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-mono-code text-display leading-none text-on-surface">14h 32m</span>
+</div>
+<div class="mt-md flex items-center gap-sm">
+<div class="flex-1 h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-3/4"></div>
+</div>
+<span class="font-mono-label text-mono-label text-secondary">+12.4%</span>
+</div>
+</div>
+<!-- Card 3: Efficiency -->
+<div class="glass-panel p-md rounded-xl">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Agent Handoff Efficiency</span>
+<span class="material-symbols-outlined text-tertiary text-md" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-mono-code text-display leading-none text-tertiary">94.2</span>
+<span class="font-mono-label text-mono-label text-tertiary/60">%</span>
+</div>
+<div class="mt-md text-on-surface-variant font-mono-label text-mono-label">
+                        Avg Latency: <span class="text-on-surface">1.2s</span>
+</div>
+</div>
+<!-- Card 4: Failure Rate -->
+<div class="glass-panel p-md rounded-xl">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Auditor Failure Rate</span>
+<span class="material-symbols-outlined text-error text-md">policy</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-mono-code text-display leading-none text-error">3</span>
+<span class="font-mono-label text-mono-label text-error/60">Interceptions</span>
+</div>
+<div class="mt-md flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-mono-label text-mono-label text-error">Requires Attention</span>
+</div>
+</div>
+</div>
+<!-- Bento Layout Main Content -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Velocity Chart -->
+<div class="col-span-12 lg:col-span-8 glass-panel rounded-xl overflow-hidden flex flex-col">
+<div class="p-md border-b border-outline-variant flex justify-between items-center">
+<div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Credit &amp; Token Velocity</h3>
+<p class="font-mono-label text-mono-label text-on-surface-variant">Real-time resource allocation by role</p>
+</div>
+<div class="flex gap-md">
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-purple-500"></span>
+<span class="font-mono-label text-mono-label">Planner</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-mono-label text-mono-label">Developer</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-mono-label text-mono-label">Auditor</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="font-mono-label text-mono-label">Tester</span>
+</div>
+</div>
+</div>
+<div class="flex-1 min-h-[320px] p-md relative">
+<!-- Simulated Area Chart -->
+<div class="absolute inset-x-md bottom-md top-lg flex items-end gap-[1px]">
+<div class="flex-1 flex flex-col-reverse group">
+<div class="bg-tertiary/60 h-[10%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-secondary/60 h-[5%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-primary/60 h-[25%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-purple-500/60 h-[15%] group-hover:opacity-100 opacity-80"></div>
+</div>
+<div class="flex-1 flex flex-col-reverse group">
+<div class="bg-tertiary/60 h-[15%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-secondary/60 h-[10%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-primary/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-purple-500/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+</div>
+<!-- Repeats to fill space... simulated visual complexity -->
+<div class="flex-1 flex flex-col-reverse group">
+<div class="bg-tertiary/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-secondary/60 h-[15%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-primary/60 h-[35%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-purple-500/60 h-[10%] group-hover:opacity-100 opacity-80"></div>
+</div>
+<div class="flex-1 flex flex-col-reverse group">
+<div class="bg-tertiary/60 h-[25%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-secondary/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-primary/60 h-[40%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-purple-500/60 h-[5%] group-hover:opacity-100 opacity-80"></div>
+</div>
+<div class="flex-1 flex flex-col-reverse group">
+<div class="bg-tertiary/60 h-[15%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-secondary/60 h-[25%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-primary/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-purple-500/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+</div>
+<div class="flex-1 flex flex-col-reverse group">
+<div class="bg-tertiary/60 h-[20%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-secondary/60 h-[30%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-primary/60 h-[30%] group-hover:opacity-100 opacity-80"></div>
+<div class="bg-purple-500/60 h-[10%] group-hover:opacity-100 opacity-80"></div>
+</div>
+</div>
+<!-- Axis Labels -->
+<div class="absolute bottom-4 inset-x-md flex justify-between text-[10px] font-mono-label opacity-40 uppercase">
+<span>08:00 AM</span>
+<span>10:00 AM</span>
+<span>12:00 PM</span>
+<span>02:00 PM</span>
+<span>04:00 PM</span>
+<span>Current</span>
+</div>
+</div>
+</div>
+<!-- Human Intervention Gauge -->
+<div class="col-span-12 lg:col-span-4 glass-panel rounded-xl p-md flex flex-col items-center justify-center relative">
+<h3 class="absolute top-md left-md font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Human Intervention Ratio</h3>
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-primary transition-all duration-1000" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502" stroke-dashoffset="400" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-mono-code text-[42px] leading-none text-on-surface">22%</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase">Intervention</span>
+</div>
+</div>
+<div class="mt-lg w-full space-y-sm">
+<div class="flex justify-between font-mono-label text-mono-label">
+<span class="text-on-surface-variant">Active Wait</span>
+<span class="text-primary">02:14:12</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[22%]"></div>
+</div>
+<p class="text-[11px] text-on-surface-variant text-center italic mt-xs leading-tight">
+                            AI autonomy sustained for 78% of session. System currently waiting for HITL approval on Vault migration.
+                        </p>
+</div>
+</div>
+<!-- Process Quality & Logs -->
+<div class="col-span-12 lg:col-span-6 glass-panel rounded-xl overflow-hidden">
+<div class="p-md border-b border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">security</span>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Auditor Enforcement Index</h3>
+</div>
+<div class="p-md space-y-md">
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container-low p-sm border border-outline-variant rounded">
+<div class="text-[10px] font-mono-label text-on-surface-variant uppercase mb-xs">Deviation Score</div>
+<div class="font-mono-code text-headline-md text-secondary">4.2 <span class="text-xs opacity-50">/ 10</span></div>
+</div>
+<div class="bg-surface-container-low p-sm border border-outline-variant rounded">
+<div class="text-[10px] font-mono-label text-on-surface-variant uppercase mb-xs">Enforcement Success</div>
+<div class="font-mono-code text-headline-md text-tertiary">100%</div>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center gap-md p-sm bg-error/10 border-l-2 border-error rounded-r">
+<span class="material-symbols-outlined text-error text-md">dangerous</span>
+<div class="flex-1">
+<div class="font-mono-label text-mono-label font-bold text-on-surface">UNAUTHORIZED TOKEN ACCESS PREVENTED</div>
+<div class="font-mono-label text-[10px] text-on-surface-variant">Agent 'Dev-04' attempted to read Production Vault.</div>
+</div>
+<span class="font-mono-label text-xs opacity-40">14:22:11</span>
+</div>
+<div class="flex items-center gap-md p-sm bg-secondary/10 border-l-2 border-secondary rounded-r">
+<span class="material-symbols-outlined text-secondary text-md">rule</span>
+<div class="flex-1">
+<div class="font-mono-label text-mono-label font-bold text-on-surface">NAMING CONVENTION CORRECTION</div>
+<div class="font-mono-label text-[10px] text-on-surface-variant">Re-indexed 14 variables to match platform spec.</div>
+</div>
+<span class="font-mono-label text-xs opacity-40">13:05:04</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Runaway Loop Safeguard -->
+<div class="col-span-12 lg:col-span-6 glass-panel rounded-xl overflow-hidden flex flex-col bg-black">
+<div class="p-sm bg-surface-container-highest flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono-label text-[10px] uppercase tracking-widest text-on-surface font-bold">Safeguard Log: Recursive Prevention</span>
+</div>
+<span class="font-mono-label text-[10px] opacity-40 uppercase">v4.0_Safe_Kernel</span>
+</div>
+<div class="flex-1 p-md font-mono-code text-mono-code text-tertiary terminal-scroll overflow-y-auto max-h-[250px]">
+<div class="mb-xs"><span class="opacity-30">[15:02:12]</span> <span class="text-on-surface-variant">ANALYZING AGENT 'TESTER_BETA' CALL STACK...</span></div>
+<div class="mb-xs"><span class="opacity-30">[15:02:14]</span> <span class="text-secondary">WARNING: CIRCULAR LOGIC DETECTED IN 'validation_retry_loop'.</span></div>
+<div class="mb-xs"><span class="opacity-30">[15:02:14]</span> <span class="text-secondary">ITERATION COUNT: 14 | MAX_THRESHOLD: 10</span></div>
+<div class="mb-xs"><span class="opacity-30">[15:02:15]</span> <span class="text-error font-bold">SAFEGUARD TRIGGERED: KILLING PROCESS ID #8841</span></div>
+<div class="mb-xs"><span class="opacity-30">[15:02:15]</span> <span class="text-tertiary">ROLLING BACK TRANSACTION: UUID_99A1-22</span></div>
+<div class="mb-xs"><span class="opacity-30">[15:02:16]</span> <span class="text-tertiary">STATE RESTORED TO T-minus 400ms.</span></div>
+<div class="mb-xs"><span class="opacity-30">[15:10:01]</span> <span class="text-on-surface-variant">MONITORING SYSTEM IDLE.</span></div>
+<div class="animate-pulse">_</div>
+</div>
+<div class="p-sm border-t border-outline-variant bg-surface-container-low flex justify-between">
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase">Total Debug Loops Blocked Today: 12</span>
+<span class="font-mono-label text-[10px] text-on-surface-variant uppercase">Savings: ~420.5 CR</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Interactive Layer for data pulses -->
+<script>
+        // Micro-interaction for refreshing sparklines
+        setInterval(() => {
+            const sparklines = document.querySelectorAll('.flex-1.bg-primary\\/20, .flex-1.bg-primary\\/40, .flex-1.bg-primary\\/60');
+            sparklines.forEach(bar => {
+                const height = Math.floor(Math.random() * 80) + 20;
+                bar.style.height = height + '%';
+            });
+        }, 3000);
+    </script>
+</body></html>

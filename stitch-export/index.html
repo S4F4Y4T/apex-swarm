@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Agentic Software Factory Dashboard - Stitch Prototype</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              background: "#0b1326",
+              surface: "#171f33",
+              "surface-container": "#222a3d",
+              primary: "#4cd7f6",
+              "primary-container": "#06b6d4",
+              secondary: "#ffb95f",
+              "secondary-container": "#ee9800",
+              tertiary: "#4edea3",
+              "tertiary-container": "#1bbd85",
+              "on-surface": "#dae2fd",
+              "on-surface-variant": "#bcc9cd",
+              outline: "#869397"
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"]
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #0b1326;
+        color: #dae2fd;
+        font-family: 'Inter', sans-serif;
+      }
+      .glow-hover:hover {
+        box-shadow: 0 0 15px rgba(76, 215, 246, 0.2);
+        border-color: rgba(76, 215, 246, 0.4);
+      }
+      .pulse-dot {
+        position: relative;
+      }
+      .pulse-dot::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: inherit;
+        border-radius: 50%;
+        animation: pulse 1.8s infinite;
+        opacity: 0.8;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(2.5);
+          opacity: 0;
+        }
+      }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-primary/30 selection:text-primary">
+
+    <!-- Header Section -->
+    <header class="border-b border-white/5 bg-background/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-primary to-primary-container flex items-center justify-center shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-background font-bold">rocket_launch</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        Agentic Software Factory <span class="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">PROTOTYPE</span>
+                    </h1>
+                    <p class="text-xs text-on-surface-variant font-mono">Project ID: 4292011975347891523</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <span class="flex h-2.5 w-2.5 rounded-full bg-tertiary pulse-dot"></span>
+                <span class="text-xs font-mono text-tertiary uppercase tracking-wider font-semibold">9 Screens Active</span>
+                <span class="text-white/10">|</span>
+                <span class="text-xs text-on-surface-variant font-mono">Theme: Dark Factory</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl w-full mx-auto px-6 py-8 flex-grow">
+        
+        <!-- Welcome Banner -->
+        <div class="mb-10 p-6 rounded-xl border border-white/5 bg-surface/30 backdrop-blur flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+                <h2 class="text-lg font-semibold text-white mb-1">Stitch Project Export</h2>
+                <p class="text-sm text-on-surface-variant max-w-2xl">
+                    All UI prototype screens for the <strong>Agentic Software Factory Dashboard</strong> have been successfully fetched and compiled. You can click on any screen card below to open its live interactive HTML prototype.
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <span class="text-xs px-3 py-1.5 rounded-md bg-white/5 border border-white/10 font-mono text-on-surface">9 HTML Files</span>
+                <span class="text-xs px-3 py-1.5 rounded-md bg-primary/10 border border-primary/20 font-mono text-primary">Interactive UI</span>
+            </div>
+        </div>
+
+        <!-- Screens Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Screen 1 -->
+            <a href="project_workspace_kanban_board_view.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">view_week</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Project Workspace: Kanban Board View</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Visual task board orchestration showing running agent status pipelines, assignments, and backlog cards.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 2 -->
+            <a href="project_workspace_live_logs_view.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">terminal</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Project Workspace: Live Logs View</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Real-time console output, telemetry details, and agent execution trace monitoring with syntax highlighting.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 3 -->
+            <a href="project_workspace_agent_chat_view.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">forum</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Project Workspace: Agent Chat View</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Interactive communication hub between human operators and AI agents, including tool execution logs and HITL approvals.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 4 -->
+            <a href="project_telemetry_cattlesync_platform.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">monitoring</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Project Telemetry: Cattlesync Platform</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">High density dashboards showing active agents, execution loops, costs, CPU usage, memory and node telemetry.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 5 -->
+            <a href="projects_explorer_factory_modules_grid.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">grid_view</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Projects Explorer: Factory Modules Grid</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Grid overview of all active modules, build pipelines, health check indexes, and overall system status details.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 6 -->
+            <a href="project_hub_jsrm_erp_dashboard.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">dashboard</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Project Hub: JSRM ERP Dashboard</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">A high-level project view dashboard specific to the JSRM ERP application module showing modules and builds status.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 7 -->
+            <a href="project_workspace_settings_rules_view.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">rule</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Project Workspace: Settings & Rules</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">System policies, AI behavior guidelines, and human-in-the-loop triggers configuration.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 8 -->
+            <a href="billing_credit_utility.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">payments</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Billing & Credit Utility</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Credits consumption dashboard, billing cycles, invoice records, and cost projections.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <!-- Screen 9 -->
+            <a href="settings_configuration.html" class="group flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-surface hover:bg-surface-container transition-all duration-300 glow-hover relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-300"></div>
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
+                            <span class="material-symbols-outlined text-lg">settings</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-on-surface-variant bg-white/5 px-2 py-0.5 rounded">DESKTOP</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white group-hover:text-primary transition-colors mb-2">Settings & Configuration</h3>
+                    <p class="text-xs text-on-surface-variant line-clamp-2">Global control configurations, database connections, third-party integrations, and environment values.</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-xs font-mono text-on-surface-variant">
+                    <span>View Screen</span>
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-6 bg-background/30 mt-12">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-on-surface-variant font-mono">
+            <div>
+                Fetched via StitchMCP client
+            </div>
+            <div>
+                © 2026 Agentic Software Factory
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

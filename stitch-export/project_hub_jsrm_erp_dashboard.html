@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JSRM ERP - Dashboard Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#06b6d4",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-primary-fixed": "#001f26",
+                        "tertiary-container": "#1bbd85",
+                        "outline-variant": "#3d494c",
+                        "on-tertiary-fixed": "#002113",
+                        "on-primary-container": "#00424f",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#dae2fd",
+                        "surface": "#0b1326",
+                        "on-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "tertiary": "#4edea3",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-tertiary-container": "#00452e",
+                        "on-surface-variant": "#bcc9cd",
+                        "surface-tint": "#4cd7f6",
+                        "surface-container": "#171f33",
+                        "outline": "#869397",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-primary": "#003640",
+                        "primary-fixed": "#acedff",
+                        "primary": "#4cd7f6",
+                        "surface-dim": "#0b1326",
+                        "on-secondary": "#472a00",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#ffddb8",
+                        "inverse-primary": "#00687a",
+                        "inverse-on-surface": "#283044",
+                        "surface-variant": "#2d3449",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-secondary-container": "#5b3800",
+                        "surface-container-low": "#131b2e",
+                        "on-tertiary": "#003824",
+                        "secondary-container": "#ee9800",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#222a3d",
+                        "secondary": "#ffb95f",
+                        "surface-bright": "#31394d",
+                        "on-background": "#dae2fd",
+                        "surface-container-highest": "#2d3449",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#060e20",
+                        "on-secondary-fixed": "#2a1700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "md": "16px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xl": "48px"
+                    },
+                    "fontFamily": {
+                        "mono-label": ["JetBrains Mono"],
+                        "body-lg": ["Inter"],
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "mono-code": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Pulse Animation for Status Indicators */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(76, 215, 246, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 4px rgba(76, 215, 246, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(76, 215, 246, 0); }
+        }
+        .status-dot-active {
+            position: relative;
+        }
+        .status-dot-active::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen flex flex-col antialiased">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface/80 dark:bg-surface/80 backdrop-blur-md flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-50 border-b border-outline-variant/30">
+<div class="flex items-center gap-6">
+<h1 class="font-display text-headline-lg font-black text-primary tracking-tighter">Aigentic Factory</h1>
+<!-- Project Switcher Dropdown -->
+<div class="relative hidden md:block">
+<button class="flex items-center gap-2 font-mono-label text-mono-label text-on-surface hover:text-primary transition-colors px-3 py-1.5 rounded bg-surface-container-low border border-outline-variant/50">
+<span class="material-symbols-outlined text-[16px]">folder_managed</span>
+                    JSRM ERP
+                    <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-mono-label text-mono-label text-primary font-bold border-b-2 border-primary pb-1" href="#">Network</a>
+<a class="font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors" href="#">Registry</a>
+<a class="font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors" href="#">Vault</a>
+</nav>
+<div class="flex items-center gap-4">
+<!-- Status Indicators -->
+<div class="flex items-center gap-3 mr-4 hidden sm:flex">
+<div class="flex items-center gap-1.5 bg-surface-container-high px-2 py-1 rounded text-primary border border-primary/20">
+<div class="w-2 h-2 rounded-full bg-primary status-dot-active"></div>
+<span class="font-mono-label text-mono-label">3</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-high px-2 py-1 rounded text-secondary border border-secondary/20">
+<span class="material-symbols-outlined text-[14px]">pause_circle</span>
+<span class="font-mono-label text-mono-label">1</span>
+</div>
+</div>
+<button class="font-mono-label text-mono-label text-on-background bg-secondary hover:bg-secondary-fixed transition-colors px-4 py-2 rounded shadow-[0_0_8px_rgba(255,185,95,0.2)]">
+                HITL Alerts
+            </button>
+<div class="flex items-center gap-3">
+<button class="text-on-surface-variant hover:text-primary transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">radio_button_checked</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-surface-container-low border-r border-outline-variant/30 flex-shrink-0">
+<nav class="flex-1 py-lg flex flex-col gap-2 px-md">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-primary font-bold border-r-2 border-primary bg-surface-bright/20" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-headline-md text-body-lg">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="font-headline-md text-body-lg">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-headline-md text-body-lg">Billing</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-headline-md text-body-lg">Settings</span>
+</a>
+</nav>
+<div class="px-md pb-lg">
+<button class="w-full font-mono-label text-mono-label text-background bg-primary hover:bg-primary-fixed transition-colors py-2 rounded">
+                    Deploy New Agent
+                </button>
+</div>
+<div class="mt-auto border-t border-outline-variant/30 p-md flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="font-body-md text-body-md">Docs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:bg-surface-bright hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto p-gutter md:p-margin-desktop bg-[#020617]">
+<div class="max-w-[1600px] mx-auto space-y-lg">
+<!-- Region 1: Important Notices -->
+<section>
+<h2 class="font-headline-md text-headline-md mb-4 text-on-surface">Important Notices</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Amber Alert -->
+<div class="glass-panel p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t-2 border-t-secondary">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-0.5">warning</span>
+<div>
+<p class="font-mono-label text-mono-label text-secondary mb-1">HITL REQUIRED</p>
+<p class="font-body-lg text-body-lg text-on-surface">Approval needed: schema migration for Catalog svc</p>
+</div>
+</div>
+<button class="shrink-0 bg-secondary text-background font-mono-label text-mono-label px-4 py-2 rounded hover:bg-secondary-fixed transition-colors flex items-center gap-2">
+                                Review <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- Red Alert -->
+<div class="glass-panel p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t-2 border-t-error">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error mt-0.5">error</span>
+<div>
+<p class="font-mono-label text-mono-label text-error mb-1">CRITICAL FAILURE</p>
+<p class="font-body-lg text-body-lg text-on-surface">Developer agent failed 2x on auth svc build</p>
+</div>
+</div>
+<button class="shrink-0 border border-error text-error hover:bg-error/10 font-mono-label text-mono-label px-4 py-2 rounded transition-colors flex items-center gap-2">
+                                View <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Region 2: Stats Strip -->
+<section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Task Stat -->
+<div class="glass-panel p-4 rounded flex flex-col justify-between h-24">
+<div class="flex justify-between items-start">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Tasks</span>
+<span class="text-tertiary flex items-center text-[10px]"><span class="material-symbols-outlined text-[14px]">arrow_drop_up</span></span>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg mb-2">14/22</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[64%] shadow-[0_0_8px_rgba(76,215,246,0.5)]"></div>
+</div>
+</div>
+</div>
+<!-- Agents Stat -->
+<div class="glass-panel p-4 rounded flex flex-col justify-between h-24">
+<div class="flex justify-between items-start">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Agents</span>
+<span class="text-tertiary flex items-center text-[10px]"><span class="material-symbols-outlined text-[14px]">arrow_drop_up</span></span>
+</div>
+<div class="flex items-end gap-2">
+<div class="font-headline-lg text-headline-lg">3 active</div>
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-1">/ 5</div>
+</div>
+</div>
+<!-- Credits Stat -->
+<div class="glass-panel p-4 rounded flex flex-col justify-between h-24">
+<div class="flex justify-between items-start">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Credits Used</span>
+</div>
+<div class="flex items-end gap-2">
+<div class="font-headline-lg text-headline-lg text-primary">420</div>
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-1">/ 1000</div>
+</div>
+</div>
+<!-- Uptime Stat -->
+<div class="glass-panel p-4 rounded flex flex-col justify-between h-24">
+<div class="flex justify-between items-start">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">Uptime</span>
+<div class="w-2 h-2 rounded-full bg-tertiary status-dot-active"></div>
+</div>
+<div class="font-headline-lg text-headline-lg">3d 4h</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Region 3: Navigation Cards (2x2 Grid) -->
+<section class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Agent Chat -->
+<div class="glass-panel p-6 rounded group hover:border-primary/50 transition-colors cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+<div>
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined">forum</span>
+<h3 class="font-mono-label text-mono-label uppercase">Agent Chat</h3>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface">Planner awaiting reply</p>
+</div>
+<div class="mt-4 flex justify-end">
+<span class="font-mono-label text-mono-label text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                    Open <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Kanban Board -->
+<div class="glass-panel p-6 rounded group hover:border-primary/50 transition-colors cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined">view_kanban</span>
+<h3 class="font-mono-label text-mono-label uppercase">Kanban Board</h3>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface">4 in progress, 1 blocked</p>
+</div>
+<div class="mt-4 flex justify-end">
+<span class="font-mono-label text-mono-label text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                    Open <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Live Logs -->
+<div class="glass-panel p-6 rounded group hover:border-primary/50 transition-colors cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined">terminal</span>
+<h3 class="font-mono-label text-mono-label uppercase">Live Logs</h3>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface">1,204 events today</p>
+</div>
+<div class="mt-4 flex justify-end">
+<span class="font-mono-label text-mono-label text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                    Open <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Settings -->
+<div class="glass-panel p-6 rounded group hover:border-primary/50 transition-colors cursor-pointer relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined">settings_applications</span>
+<h3 class="font-mono-label text-mono-label uppercase">Settings</h3>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface">DDaS · SDLC v2 active</p>
+</div>
+<div class="mt-4 flex justify-end">
+<span class="font-mono-label text-mono-label text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                    Open <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+</div>
+</div>
+</section>
+<!-- Region 4: Recent Activity Feed -->
+<section class="lg:col-span-1 glass-panel rounded flex flex-col bg-[#000000]/50 border-outline-variant/20">
+<div class="p-4 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low/50">
+<h3 class="font-mono-label text-mono-label text-on-surface-variant uppercase">Recent Activity</h3>
+<span class="material-symbols-outlined text-[16px] text-primary">history</span>
+</div>
+<div class="flex-1 p-4 font-mono-code text-mono-code text-on-surface-variant space-y-3 overflow-hidden">
+<div class="flex gap-3">
+<span class="text-outline shrink-0">[10:42:01]</span>
+<span class="text-tertiary">INFO</span>
+<span class="truncate">Agent 'Builder' deployed v2.1.4</span>
+</div>
+<div class="flex gap-3">
+<span class="text-outline shrink-0">[10:38:15]</span>
+<span class="text-error">FAIL</span>
+<span class="truncate">Auth svc build timeout (attempt 2)</span>
+</div>
+<div class="flex gap-3">
+<span class="text-outline shrink-0">[10:30:00]</span>
+<span class="text-secondary">WARN</span>
+<span class="truncate">Schema migration pending approval</span>
+</div>
+<div class="flex gap-3">
+<span class="text-outline shrink-0">[10:15:22]</span>
+<span class="text-tertiary">INFO</span>
+<span class="truncate">Database backup completed sync</span>
+</div>
+</div>
+<div class="p-3 border-t border-outline-variant/20 bg-surface-container-low/30">
+<button class="w-full text-center font-mono-label text-mono-label text-primary hover:text-primary-fixed transition-colors py-1">
+                                Full log →
+                            </button>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>
