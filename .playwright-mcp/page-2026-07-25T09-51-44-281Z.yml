@@ -1,0 +1,192 @@
+- generic [active] [ref=e1]:
+  - complementary [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Aigentic Factory" [level=1] [ref=e4]
+      - generic [ref=e5]: Autonomous v2.4
+    - navigation [ref=e6]:
+      - link "Dashboard" [ref=e7] [cursor=pointer]:
+        - /url: /
+      - link "Telemetry" [ref=e14] [cursor=pointer]:
+        - /url: /telemetry
+      - link "Billing" [ref=e18] [cursor=pointer]:
+        - /url: /billing
+      - link "Settings" [ref=e22] [cursor=pointer]:
+        - /url: /?tab=settings
+    - generic [ref=e27]:
+      - link "Documentation" [ref=e28] [cursor=pointer]:
+        - /url: "#"
+      - link "Support" [ref=e33] [cursor=pointer]:
+        - /url: "#"
+  - generic [ref=e39]:
+    - banner [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - 'heading "Project Telemetry: Cattlesync Platform" [level=2] [ref=e43]'
+          - generic [ref=e44]: Live Status
+        - generic [ref=e49]:
+          - generic [ref=e50]: "|"
+          - link "Network" [ref=e51] [cursor=pointer]:
+            - /url: "#"
+          - link "Registry" [ref=e52] [cursor=pointer]:
+            - /url: "#"
+          - link "Vault" [ref=e53] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e54]:
+        - button "HITL Alerts Active" [ref=e56]
+        - generic [ref=e59]:
+          - button [ref=e60]
+          - button [ref=e64]
+          - img "Architect" [ref=e69]
+    - main [ref=e70]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]: Total Credit Spend
+          - generic [ref=e77]:
+            - generic [ref=e78]: 1,420
+            - generic [ref=e79]: CR
+        - generic [ref=e90]:
+          - generic [ref=e91]: SDK Execution Time
+          - generic [ref=e96]: 14h 32m
+          - generic [ref=e98]: +12.4%
+        - generic [ref=e102]:
+          - generic [ref=e103]: Agent Handoff Efficiency
+          - generic [ref=e107]:
+            - generic [ref=e108]: "94.2"
+            - generic [ref=e109]: "%"
+          - generic [ref=e110]: "Avg Latency: 1.2s"
+        - generic [ref=e111]:
+          - generic [ref=e112]: Auditor Failure Rate
+          - generic [ref=e116]:
+            - generic [ref=e117]: "3"
+            - generic [ref=e118]: Interceptions
+          - generic [ref=e119]: Requires Attention
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e125]:
+              - heading "Credit & Token Velocity" [level=3] [ref=e126]
+              - paragraph [ref=e127]: Real-time resource allocation by role
+            - generic [ref=e128]:
+              - generic [ref=e129]: Planner
+              - generic [ref=e132]: Developer
+              - generic [ref=e135]: Auditor
+              - generic [ref=e138]: Tester
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - generic:
+                - generic: "Planner: 15%"
+                - generic: "Dev: 25%"
+                - generic: "Auditor: 5%"
+                - generic: "Tester: 10%"
+            - generic [ref=e147]:
+              - generic:
+                - generic: "Planner: 20%"
+                - generic: "Dev: 20%"
+                - generic: "Auditor: 10%"
+                - generic: "Tester: 15%"
+            - generic [ref=e152]:
+              - generic:
+                - generic: "Planner: 10%"
+                - generic: "Dev: 35%"
+                - generic: "Auditor: 15%"
+                - generic: "Tester: 20%"
+            - generic [ref=e157]:
+              - generic:
+                - generic: "Planner: 5%"
+                - generic: "Dev: 40%"
+                - generic: "Auditor: 20%"
+                - generic: "Tester: 25%"
+            - generic [ref=e162]:
+              - generic:
+                - generic: "Planner: 20%"
+                - generic: "Dev: 20%"
+                - generic: "Auditor: 25%"
+                - generic: "Tester: 15%"
+            - generic [ref=e167]:
+              - generic:
+                - generic: "Planner: 10%"
+                - generic: "Dev: 30%"
+                - generic: "Auditor: 30%"
+                - generic: "Tester: 10%"
+            - generic [ref=e172]:
+              - generic [ref=e173]: 08:00 AM
+              - generic [ref=e174]: 10:00 AM
+              - generic [ref=e175]: 12:00 PM
+              - generic [ref=e176]: 02:00 PM
+              - generic [ref=e177]: 04:00 PM
+              - generic [ref=e178]: Current
+        - generic [ref=e179]:
+          - heading "Human Intervention Ratio" [level=3] [ref=e181]
+          - generic [ref=e186]:
+            - generic [ref=e187]: 22%
+            - generic [ref=e188]: Intervention
+          - generic [ref=e189]:
+            - generic [ref=e190]:
+              - generic [ref=e191]: Active Wait Time
+              - generic [ref=e192]: 02:12:12
+            - paragraph [ref=e195]: AI autonomy sustained for 78% of session. System currently waiting for HITL approval on production deployer task.
+        - generic [ref=e196]:
+          - heading "Auditor Enforcement Index" [level=3] [ref=e200]
+          - generic [ref=e201]:
+            - generic [ref=e202]:
+              - generic [ref=e203]:
+                - generic [ref=e204]: Deviation Score
+                - generic [ref=e205]: 4.2 / 10
+              - generic [ref=e206]:
+                - generic [ref=e207]: Enforcement Success
+                - generic [ref=e208]: 100%
+            - generic [ref=e209]:
+              - generic [ref=e210]:
+                - generic [ref=e213]:
+                  - generic [ref=e214]: UNAUTHORIZED TOKEN ACCESS PREVENTED
+                  - generic [ref=e215]: Agent 'Dev-04' attempted to read Production Vault parameters.
+                - generic [ref=e216]: 14:22:11
+              - generic [ref=e217]:
+                - generic [ref=e220]:
+                  - generic [ref=e221]: NAMING CONVENTION CORRECTION
+                  - generic [ref=e222]: Re-indexed 14 variables to match platform database schemas.
+                - generic [ref=e223]: 13:05:04
+        - generic [ref=e224]:
+          - generic [ref=e225]:
+            - generic [ref=e226]: "Safeguard Log: Recursive Prevention"
+            - generic [ref=e229]: v4.0_Safe_Kernel
+          - generic [ref=e230]:
+            - generic [ref=e231]:
+              - generic [ref=e232]: "[15:02:12]"
+              - generic [ref=e233]: ANALYZING AGENT 'TESTER_BETA' CALL STACK...
+            - generic [ref=e234]:
+              - generic [ref=e235]: "[15:02:14]"
+              - generic [ref=e236]: "WARNING: CIRCULAR LOGIC DETECTED IN 'validation_retry_loop'."
+            - generic [ref=e237]:
+              - generic [ref=e238]: "[15:02:14]"
+              - generic [ref=e239]: "ITERATION COUNT: 14 | MAX_THRESHOLD: 10"
+            - generic [ref=e240]:
+              - generic [ref=e241]: "[15:02:15]"
+              - generic [ref=e242]: "SAFEGUARD TRIGGERED: KILLING PROCESS ID #8841"
+            - generic [ref=e243]:
+              - generic [ref=e244]: "[15:02:15]"
+              - generic [ref=e245]: "ROLLING BACK TRANSACTION: UUID_99A1-22"
+            - generic [ref=e246]:
+              - generic [ref=e247]: "[15:02:16]"
+              - generic [ref=e248]: STATE RESTORED TO T-minus 400ms.
+            - generic [ref=e249]:
+              - generic [ref=e250]: "[15:10:01]"
+              - generic [ref=e251]: MONITORING SYSTEM IDLE. ALL THREADS NOMINAL.
+          - generic [ref=e253]:
+            - generic [ref=e254]: "Total Debug Loops Blocked Today: 12"
+            - generic [ref=e255]: "Savings: ~420.5 CR"
+      - generic [ref=e256]:
+        - generic [ref=e257]:
+          - heading "Scale Orchestration Environment" [level=3] [ref=e258]
+          - paragraph [ref=e262]: Add specialized planner, developer, auditor, or testing units directly to active workspace queues.
+        - button "Deploy New Agent" [ref=e263]
+    - contentinfo [ref=e265]:
+      - generic [ref=e266]:
+        - generic [ref=e267]: "System: Nominal"
+        - generic [ref=e270]: "Cluster: US-EAST-1 (v2.4)"
+      - generic [ref=e278]:
+        - generic [ref=e279]: "Uptime: 142h 21m"
+        - generic [ref=e280]:
+          - generic [ref=e281]: "Latency:"
+          - generic [ref=e282]: 24ms
+  - button "Open Next.js Dev Tools" [ref=e288] [cursor=pointer]

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -14,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Agentic Software Factory",
-  description: "Agentic Software Factory Dashboard - Built with Next.js, Tailwind v4, & Shadcn",
+  description: "Agentic Software Factory Dashboard - Built with Next.js, Tailwind, & Shadcn",
 };
 
 export default function RootLayout({
@@ -25,9 +26,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full bg-background text-foreground flex">
+        <Sidebar />
+        <div className="flex-grow ml-64 flex flex-col min-h-screen">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

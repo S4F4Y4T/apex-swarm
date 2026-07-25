@@ -54,6 +54,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import PageLayout from "@/components/PageLayout"
 
 // Types
 interface LogMessage {
@@ -87,6 +88,38 @@ interface KanbanTask {
 export default function Dashboard() {
   // Active tab state
   const [activeTab, setActiveTab] = useState<string>("kanban")
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateTab = () => {
+        const params = new URLSearchParams(window.location.search)
+        const tab = params.get("tab")
+        if (tab && ["kanban", "logs", "chat", "settings"].includes(tab)) {
+          setActiveTab(tab)
+        }
+      }
+      updateTab()
+
+      const originalPush = window.history.pushState
+      window.history.pushState = function (...args) {
+        originalPush.apply(window.history, args)
+        updateTab()
+      }
+      
+      const originalReplace = window.history.replaceState
+      window.history.replaceState = function (...args) {
+        originalReplace.apply(window.history, args)
+        updateTab()
+      }
+
+      window.addEventListener("popstate", updateTab)
+      return () => {
+        window.history.pushState = originalPush
+        window.history.replaceState = originalReplace
+        window.removeEventListener("popstate", updateTab)
+      }
+    }
+  }, [])
 
   // System stats state
   const [cpuUsage, setCpuUsage] = useState<number>(42)
@@ -415,37 +448,29 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans antialiased">
-      
-      {/* Top Premium Header */}
-      <header className="border-b border-border/40 bg-background/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-primary to-primary-container flex items-center justify-center shadow-lg shadow-primary/20">
-            <Layers className="size-5 text-primary-foreground font-bold" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              Agentic Software Factory <Badge className="bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20">ACTIVE</Badge>
-            </h1>
-            <p className="text-xs text-muted-foreground font-mono">Project Workspace ID: 4292011975347891523</p>
-          </div>
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-6 text-sm">
-          <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-tertiary relative after:absolute after:inset-0 after:rounded-full after:bg-tertiary after:animate-ping"></span>
-            <span className="text-xs font-mono font-semibold text-tertiary uppercase tracking-wider">Live System Sync</span>
+    <PageLayout
+      title="Agentic Software Factory"
+      badge={{ text: "ACTIVE", variant: "primary" }}
+      className="max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 flex-grow"
+      headerActions={
+        <div className="flex items-center gap-6 text-xs font-mono text-muted-foreground">
+          <div className="hidden xl:flex flex-col text-right">
+            <span className="text-[10px] text-zinc-500">PROJECT WORKSPACE ID</span>
+            <span className="text-white">4292011975347891523</span>
           </div>
           <span className="text-white/10 hidden sm:inline">|</span>
-          <div className="flex items-center gap-2 font-mono text-xs">
-            <span className="text-muted-foreground">CREDITS CONSUMPTION:</span>
-            <span className="text-secondary font-bold">${totalCost.toFixed(2)}</span>
+          <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-tertiary relative after:absolute after:inset-0 after:rounded-full after:bg-tertiary after:animate-ping"></span>
+            <span className="text-[10px] font-semibold text-tertiary uppercase tracking-wider">Sync</span>
+          </div>
+          <span className="text-white/10 hidden sm:inline">|</span>
+          <div className="flex flex-col text-right">
+            <span className="text-[10px] text-zinc-500">CREDITS CONSUMED</span>
+            <span className="text-secondary font-bold font-sans text-sm">${totalCost.toFixed(2)}</span>
           </div>
         </div>
-      </header>
-
-      {/* Main Dashboard Grid Layout */}
-      <main className="max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 flex-grow">
+      }
+    >
         
         {/* Left Sidebar: Telemetry & METRICS (1 Column wide on desktop) */}
         <div className="lg:col-span-1 flex flex-col gap-6">
@@ -1159,22 +1184,7 @@ export default function Dashboard() {
 
         </div>
 
-      </main>
-
-      {/* Full Footer */}
-      <footer className="border-t border-border/40 py-6 bg-background/30 mt-auto">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground font-mono">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm text-primary">circle_notifications</span>
-            <span>Agentic Software Factory v1.2.0 • Built with Next.js & Shadcn</span>
-          </div>
-          <div>
-            © 2026 Dark Factory Systems Inc.
-          </div>
-        </div>
-      </footer>
-
-    </div>
+    </PageLayout>
   )
 }
 
