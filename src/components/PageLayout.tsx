@@ -1,16 +1,13 @@
 "use client"
 
-import React, { Suspense } from "react"
-import Header from "./Header"
+import React, { useEffect } from "react"
 import Footer from "./Footer"
+import { useHeaderContext, HeaderBadge } from "./HeaderContext"
 import { cn } from "@/lib/utils"
 
 interface PageLayoutProps {
   title?: React.ReactNode
-  badge?: {
-    text: string
-    variant?: "primary" | "secondary" | "tertiary" | "default" | "destructive"
-  }
+  badge?: HeaderBadge
   showSearch?: boolean
   searchPlaceholder?: string
   onSearchChange?: (val: string) => void
@@ -38,18 +35,24 @@ export default function PageLayout({
   className,
   containerClassName
 }: PageLayoutProps) {
+  const { setHeaderConfig } = useHeaderContext()
+
+  useEffect(() => {
+    setHeaderConfig({
+      title,
+      badge,
+      showSearch,
+      searchPlaceholder,
+      onSearchChange,
+      actions: headerActions
+    })
+    return () => {
+      setHeaderConfig({})
+    }
+  }, [title, badge, showSearch, searchPlaceholder, onSearchChange, headerActions, setHeaderConfig])
+
   return (
-    <div className={cn("min-h-screen bg-background text-foreground flex flex-col font-sans antialiased relative w-full", containerClassName)}>
-      <Suspense fallback={<div className="h-16 bg-[#0b1326]/80 border-b border-border/40 w-full" />}>
-        <Header 
-          title={title} 
-          badge={badge} 
-          showSearch={showSearch} 
-          searchPlaceholder={searchPlaceholder} 
-          onSearchChange={onSearchChange} 
-          actions={headerActions} 
-        />
-      </Suspense>
+    <div className={cn("min-h-screen text-foreground flex flex-col font-sans antialiased relative w-full", containerClassName)}>
       <main className={cn("p-6 md:p-8 space-y-6 max-w-[1600px] w-full mx-auto flex-grow", className)}>
         {children}
       </main>
@@ -57,3 +60,4 @@ export default function PageLayout({
     </div>
   )
 }
+

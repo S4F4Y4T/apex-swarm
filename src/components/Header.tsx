@@ -22,6 +22,7 @@ import {
   Sliders
 } from "lucide-react"
 import { projectsData } from "@/lib/projects"
+import { useHeaderContext } from "./HeaderContext"
 
 interface HeaderProps {
   title?: React.ReactNode
@@ -35,14 +36,17 @@ interface HeaderProps {
   actions?: React.ReactNode
 }
 
-export default function Header({
-  title,
-  badge,
-  showSearch = false,
-  searchPlaceholder = "Search registry...",
-  onSearchChange,
-  actions
-}: HeaderProps) {
+export default function Header(props: HeaderProps) {
+  const context = useHeaderContext()
+  const ctx = context?.config || {}
+
+  const title = props.title ?? ctx.title
+  const badge = props.badge ?? ctx.badge
+  const showSearch = props.showSearch ?? ctx.showSearch ?? false
+  const searchPlaceholder = props.searchPlaceholder || ctx.searchPlaceholder || "Search registry..."
+  const onSearchChange = props.onSearchChange || ctx.onSearchChange
+  const actions = props.actions || ctx.actions
+
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
