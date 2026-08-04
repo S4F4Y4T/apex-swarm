@@ -91,7 +91,6 @@ function ProjectsExplorerContent() {
       {viewType === "card" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((proj) => {
-            const isJSRM = proj.id === "jsrm_erp"
             const isSelected = proj.id === selectedProjectId
             
             // Build the card destination link, preserving view type and other parameters
@@ -215,12 +214,7 @@ function ProjectsExplorerContent() {
                           <p className="font-semibold text-white">{proj.totalSpend}</p>
                         </div>
                       </div>
-                      {isJSRM ? (
-                        <span className="text-primary font-bold text-xs flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                          <span>Enter Hub</span>
-                          <ArrowRight className="size-3.5" />
-                        </span>
-                      ) : proj.alert ? (
+                      {proj.alert ? (
                         <button className="px-3 py-1 bg-secondary text-background font-bold rounded font-mono text-[9px] hover:bg-[#ee9800] transition-all">
                           REVIEW
                         </button>

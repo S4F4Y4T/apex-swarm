@@ -41,7 +41,7 @@ export default function Sidebar() {
   const navItems = [
     {
       label: "Dashboard",
-      href: `/?projectId=${projectId}`,
+      href: "/",
       icon: LayoutDashboard,
       isActive: pathname === "/"
     },

@@ -37,7 +37,7 @@ export const projectsData: ProjectConfig[] = [
     workspaceId: "4292011975347891523",
     companyName: "JSRM Enterprises Ltd.",
     missionScope: "Enterprise resource planning automation with a focus on supply chain transparency and autonomous fiscal reconciliation.",
-    href: "/" // JSRM ERP Dashboard page is /
+    href: "/workspace?projectId=jsrm_erp"
   },
   {
     id: "evore_backend",

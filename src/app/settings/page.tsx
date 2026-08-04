@@ -25,6 +25,22 @@ import {
   XCircle
 } from "lucide-react"
 
+// Default endpoints and selectable models per BYOK provider
+const PROVIDER_DEFAULTS = {
+  openai: {
+    endpoint: "https://api.openai.com/v1",
+    models: ["gpt-4o", "gpt-4o-mini", "gpt-4.1", "o3-mini"]
+  },
+  anthropic: {
+    endpoint: "https://api.anthropic.com/v1",
+    models: ["claude-opus-5", "claude-sonnet-5", "claude-haiku-4-5"]
+  },
+  google: {
+    endpoint: "https://generativelanguage.googleapis.com/v1beta",
+    models: ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.0-flash"]
+  }
+} as const
+
 function SettingsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -50,14 +66,22 @@ function SettingsPageContent() {
   const [hitlAlertBanners, setHitlAlertBanners] = useState(true)
   const [agentLifecycleEvents, setAgentLifecycleEvents] = useState(false)
 
-  // Test Connection States
-  const [openaiStatus, setOpenaiStatus] = useState<"valid" | "invalid" | "unchecked">("unchecked")
-  const [anthropicStatus, setAnthropicStatus] = useState<"valid" | "invalid" | "unchecked">("unchecked")
-  const [googleStatus, setGoogleStatus] = useState<"valid" | "invalid" | "unchecked">("unchecked")
+  // Endpoint + Model selection per provider
+  const [openaiEndpoint, setOpenaiEndpoint] = useState<string>(PROVIDER_DEFAULTS.openai.endpoint)
+  const [anthropicEndpoint, setAnthropicEndpoint] = useState<string>(PROVIDER_DEFAULTS.anthropic.endpoint)
+  const [googleEndpoint, setGoogleEndpoint] = useState<string>(PROVIDER_DEFAULTS.google.endpoint)
+  const [openaiModel, setOpenaiModel] = useState<string>(PROVIDER_DEFAULTS.openai.models[0])
+  const [anthropicModel, setAnthropicModel] = useState<string>(PROVIDER_DEFAULTS.anthropic.models[0])
+  const [googleModel, setGoogleModel] = useState<string>(PROVIDER_DEFAULTS.google.models[0])
 
-  const [testingOpenai, setTestingOpenai] = useState(false)
-  const [testingAnthropic, setTestingAnthropic] = useState(false)
-  const [testingGoogle, setTestingGoogle] = useState(false)
+  // Connection States (set by "Save & Connect")
+  const [openaiStatus, setOpenaiStatus] = useState<"connected" | "invalid" | "unchecked">("unchecked")
+  const [anthropicStatus, setAnthropicStatus] = useState<"connected" | "invalid" | "unchecked">("unchecked")
+  const [googleStatus, setGoogleStatus] = useState<"connected" | "invalid" | "unchecked">("unchecked")
+
+  const [connectingOpenai, setConnectingOpenai] = useState(false)
+  const [connectingAnthropic, setConnectingAnthropic] = useState(false)
+  const [connectingGoogle, setConnectingGoogle] = useState(false)
 
   // Profile State
   const [fullName, setFullName] = useState("Alex Mercer")
@@ -112,9 +136,16 @@ function SettingsPageContent() {
       setMaxParallelAgents(Number(storedMaxParallel))
       setRunawayProtection(Number(storedRunaway))
 
-      if (storedOpenaiKey) setOpenaiStatus("valid")
-      if (storedAnthropicKey) setAnthropicStatus("valid")
-      if (storedGoogleKey) setGoogleStatus("valid")
+      setOpenaiEndpoint(localStorage.getItem("openai_endpoint") || PROVIDER_DEFAULTS.openai.endpoint)
+      setAnthropicEndpoint(localStorage.getItem("anthropic_endpoint") || PROVIDER_DEFAULTS.anthropic.endpoint)
+      setGoogleEndpoint(localStorage.getItem("google_endpoint") || PROVIDER_DEFAULTS.google.endpoint)
+      setOpenaiModel(localStorage.getItem("openai_model") || PROVIDER_DEFAULTS.openai.models[0])
+      setAnthropicModel(localStorage.getItem("anthropic_model") || PROVIDER_DEFAULTS.anthropic.models[0])
+      setGoogleModel(localStorage.getItem("google_model") || PROVIDER_DEFAULTS.google.models[0])
+
+      setOpenaiStatus(storedOpenaiKey ? "connected" : "unchecked")
+      setAnthropicStatus(storedAnthropicKey ? "connected" : "unchecked")
+      setGoogleStatus(storedGoogleKey ? "connected" : "unchecked")
     }
 
     loadSettings()
@@ -124,38 +155,37 @@ function SettingsPageContent() {
     }
   }, [])
 
-  const handleTestConnection = (provider: "openai" | "anthropic" | "google", key: string) => {
-    if (provider === "openai") {
-      setTestingOpenai(true)
-      setTimeout(() => {
-        setTestingOpenai(false)
-        if (key.startsWith("sk-") && key.length > 10) {
-          setOpenaiStatus("valid")
-        } else {
-          setOpenaiStatus("invalid")
-        }
-      }, 1200)
-    } else if (provider === "anthropic") {
-      setTestingAnthropic(true)
-      setTimeout(() => {
-        setTestingAnthropic(false)
-        if (key.startsWith("sk-ant-") && key.length > 15) {
-          setAnthropicStatus("valid")
-        } else {
-          setAnthropicStatus("invalid")
-        }
-      }, 1200)
-    } else if (provider === "google") {
-      setTestingGoogle(true)
-      setTimeout(() => {
-        setTestingGoogle(false)
-        if (key.length > 5) {
-          setGoogleStatus("valid")
-        } else {
-          setGoogleStatus("invalid")
-        }
-      }, 1200)
-    }
+  // Validate + persist a provider's endpoint/model/key so agents can connect using it
+  const handleSaveAndConnect = (
+    provider: "openai" | "anthropic" | "google",
+    key: string,
+    endpoint: string,
+    model: string
+  ) => {
+    const setConnecting = provider === "openai" ? setConnectingOpenai : provider === "anthropic" ? setConnectingAnthropic : setConnectingGoogle
+    const setStatus = provider === "openai" ? setOpenaiStatus : provider === "anthropic" ? setAnthropicStatus : setGoogleStatus
+
+    const isValidFormat =
+      provider === "openai" ? key.startsWith("sk-") && key.length > 10 :
+      provider === "anthropic" ? key.startsWith("sk-ant-") && key.length > 15 :
+      key.length > 5
+
+    setConnecting(true)
+    setTimeout(() => {
+      setConnecting(false)
+      if (isValidFormat) {
+        localStorage.setItem(`${provider}_key`, key)
+        localStorage.setItem(`${provider}_endpoint`, endpoint)
+        localStorage.setItem(`${provider}_model`, model)
+        window.dispatchEvent(new Event("apex-settings-update"))
+        setStatus("connected")
+        setToastMessage(`${provider.charAt(0).toUpperCase() + provider.slice(1)} connected — using ${model}`)
+      } else {
+        setStatus("invalid")
+        setToastMessage(`${provider.charAt(0).toUpperCase() + provider.slice(1)} connection failed — check API key`)
+      }
+      setTimeout(() => setToastMessage(null), 4000)
+    }, 1200)
   }
 
   const handleApply = () => {
@@ -169,6 +199,12 @@ function SettingsPageContent() {
     localStorage.setItem("openai_key", openaiKey)
     localStorage.setItem("anthropic_key", anthropicKey)
     localStorage.setItem("google_key", googleKey)
+    localStorage.setItem("openai_endpoint", openaiEndpoint)
+    localStorage.setItem("anthropic_endpoint", anthropicEndpoint)
+    localStorage.setItem("google_endpoint", googleEndpoint)
+    localStorage.setItem("openai_model", openaiModel)
+    localStorage.setItem("anthropic_model", anthropicModel)
+    localStorage.setItem("google_model", googleModel)
     localStorage.setItem("max_parallel_agents", String(maxParallelAgents))
     localStorage.setItem("runaway_protection", String(runawayProtection))
     
@@ -187,6 +223,12 @@ function SettingsPageContent() {
       setOpenaiKey("")
       setAnthropicKey("")
       setGoogleKey("")
+      setOpenaiEndpoint(PROVIDER_DEFAULTS.openai.endpoint)
+      setAnthropicEndpoint(PROVIDER_DEFAULTS.anthropic.endpoint)
+      setGoogleEndpoint(PROVIDER_DEFAULTS.google.endpoint)
+      setOpenaiModel(PROVIDER_DEFAULTS.openai.models[0])
+      setAnthropicModel(PROVIDER_DEFAULTS.anthropic.models[0])
+      setGoogleModel(PROVIDER_DEFAULTS.google.models[0])
       setMaxParallelAgents(24)
       setRunawayProtection(5)
       setHitlAlertBanners(true)
@@ -321,14 +363,14 @@ function SettingsPageContent() {
                         <span>OpenAI API</span>
                       </div>
                       <div className="flex-1 relative flex items-center">
-                        <input 
+                        <input
                           type={showOpenai ? "text" : "password"}
                           value={openaiKey}
                           onChange={(e) => setOpenaiKey(e.target.value)}
                           className="w-full bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 pr-10 font-mono text-xs text-white focus:border-primary focus:ring-1 focus:ring-primary/40 disabled:opacity-50 transition-colors"
                           placeholder="sk-..."
                         />
-                        <button 
+                        <button
                           type="button"
                           onClick={() => setShowOpenai(!showOpenai)}
                           className="absolute right-3 text-zinc-500 hover:text-white transition-colors"
@@ -337,19 +379,37 @@ function SettingsPageContent() {
                         </button>
                       </div>
                     </div>
+                    <div className="flex flex-col md:flex-row md:items-center gap-3 pl-0 md:pl-36">
+                      <input
+                        type="text"
+                        value={openaiEndpoint}
+                        onChange={(e) => setOpenaiEndpoint(e.target.value)}
+                        className="flex-1 bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 font-mono text-[11px] text-zinc-300 focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors"
+                        placeholder="API endpoint"
+                      />
+                      <select
+                        value={openaiModel}
+                        onChange={(e) => setOpenaiModel(e.target.value)}
+                        className="bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 font-mono text-[11px] text-white focus:outline-none focus:border-primary md:w-44 shrink-0"
+                      >
+                        {PROVIDER_DEFAULTS.openai.models.map(model => (
+                          <option key={model} value={model}>{model}</option>
+                        ))}
+                      </select>
+                    </div>
                     <div className="flex items-center justify-between pl-0 md:pl-36">
                       <button
                         type="button"
-                        onClick={() => handleTestConnection("openai", openaiKey)}
-                        disabled={!openaiKey || testingOpenai}
+                        onClick={() => handleSaveAndConnect("openai", openaiKey, openaiEndpoint, openaiModel)}
+                        disabled={!openaiKey || connectingOpenai}
                         className="px-3 py-1 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 text-primary rounded border border-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                       >
-                        {testingOpenai ? "Testing..." : "Test Connection"}
+                        {connectingOpenai ? "Connecting..." : "Save & Connect"}
                       </button>
                       <div className="text-[10px] font-mono uppercase flex items-center gap-1">
-                        {openaiStatus === "valid" && <span className="text-emerald-400 font-bold flex items-center gap-1"><Check className="size-3" /> Valid Connection</span>}
+                        {openaiStatus === "connected" && <span className="text-emerald-400 font-bold flex items-center gap-1"><Check className="size-3" /> Connected · {openaiModel}</span>}
                         {openaiStatus === "invalid" && <span className="text-rose-400 font-bold flex items-center gap-1"><XCircle className="size-3" /> Invalid Key</span>}
-                        {openaiStatus === "unchecked" && <span className="text-zinc-500">Unchecked</span>}
+                        {openaiStatus === "unchecked" && <span className="text-zinc-500">Not Connected</span>}
                       </div>
                     </div>
                   </div>
@@ -378,19 +438,37 @@ function SettingsPageContent() {
                         </button>
                       </div>
                     </div>
+                    <div className="flex flex-col md:flex-row md:items-center gap-3 pl-0 md:pl-36">
+                      <input
+                        type="text"
+                        value={anthropicEndpoint}
+                        onChange={(e) => setAnthropicEndpoint(e.target.value)}
+                        className="flex-1 bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 font-mono text-[11px] text-zinc-300 focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors"
+                        placeholder="API endpoint"
+                      />
+                      <select
+                        value={anthropicModel}
+                        onChange={(e) => setAnthropicModel(e.target.value)}
+                        className="bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 font-mono text-[11px] text-white focus:outline-none focus:border-primary md:w-44 shrink-0"
+                      >
+                        {PROVIDER_DEFAULTS.anthropic.models.map(model => (
+                          <option key={model} value={model}>{model}</option>
+                        ))}
+                      </select>
+                    </div>
                     <div className="flex items-center justify-between pl-0 md:pl-36">
                       <button
                         type="button"
-                        onClick={() => handleTestConnection("anthropic", anthropicKey)}
-                        disabled={!anthropicKey || testingAnthropic}
+                        onClick={() => handleSaveAndConnect("anthropic", anthropicKey, anthropicEndpoint, anthropicModel)}
+                        disabled={!anthropicKey || connectingAnthropic}
                         className="px-3 py-1 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 text-primary rounded border border-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                       >
-                        {testingAnthropic ? "Testing..." : "Test Connection"}
+                        {connectingAnthropic ? "Connecting..." : "Save & Connect"}
                       </button>
                       <div className="text-[10px] font-mono uppercase flex items-center gap-1">
-                        {anthropicStatus === "valid" && <span className="text-emerald-400 font-bold flex items-center gap-1"><Check className="size-3" /> Valid Connection</span>}
+                        {anthropicStatus === "connected" && <span className="text-emerald-400 font-bold flex items-center gap-1"><Check className="size-3" /> Connected · {anthropicModel}</span>}
                         {anthropicStatus === "invalid" && <span className="text-rose-400 font-bold flex items-center gap-1"><XCircle className="size-3" /> Invalid Key</span>}
-                        {anthropicStatus === "unchecked" && <span className="text-zinc-500">Unchecked</span>}
+                        {anthropicStatus === "unchecked" && <span className="text-zinc-500">Not Connected</span>}
                       </div>
                     </div>
                   </div>
@@ -419,19 +497,37 @@ function SettingsPageContent() {
                         </button>
                       </div>
                     </div>
+                    <div className="flex flex-col md:flex-row md:items-center gap-3 pl-0 md:pl-36">
+                      <input
+                        type="text"
+                        value={googleEndpoint}
+                        onChange={(e) => setGoogleEndpoint(e.target.value)}
+                        className="flex-1 bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 font-mono text-[11px] text-zinc-300 focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors"
+                        placeholder="API endpoint"
+                      />
+                      <select
+                        value={googleModel}
+                        onChange={(e) => setGoogleModel(e.target.value)}
+                        className="bg-surface-container-lowest/80 border border-border/20 rounded px-3 py-1.5 font-mono text-[11px] text-white focus:outline-none focus:border-primary md:w-44 shrink-0"
+                      >
+                        {PROVIDER_DEFAULTS.google.models.map(model => (
+                          <option key={model} value={model}>{model}</option>
+                        ))}
+                      </select>
+                    </div>
                     <div className="flex items-center justify-between pl-0 md:pl-36">
                       <button
                         type="button"
-                        onClick={() => handleTestConnection("google", googleKey)}
-                        disabled={!googleKey || testingGoogle}
+                        onClick={() => handleSaveAndConnect("google", googleKey, googleEndpoint, googleModel)}
+                        disabled={!googleKey || connectingGoogle}
                         className="px-3 py-1 text-[10px] font-mono uppercase bg-primary/10 hover:bg-primary/20 text-primary rounded border border-primary/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
                       >
-                        {testingGoogle ? "Testing..." : "Test Connection"}
+                        {connectingGoogle ? "Connecting..." : "Save & Connect"}
                       </button>
                       <div className="text-[10px] font-mono uppercase flex items-center gap-1">
-                        {googleStatus === "valid" && <span className="text-emerald-400 font-bold flex items-center gap-1"><Check className="size-3" /> Valid Connection</span>}
+                        {googleStatus === "connected" && <span className="text-emerald-400 font-bold flex items-center gap-1"><Check className="size-3" /> Connected · {googleModel}</span>}
                         {googleStatus === "invalid" && <span className="text-rose-400 font-bold flex items-center gap-1"><XCircle className="size-3" /> Invalid Key</span>}
-                        {googleStatus === "unchecked" && <span className="text-zinc-500">Unchecked</span>}
+                        {googleStatus === "unchecked" && <span className="text-zinc-500">Not Connected</span>}
                       </div>
                     </div>
                   </div>

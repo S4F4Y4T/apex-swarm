@@ -215,52 +215,58 @@ export default function Header({
       {/* Title & Badge & Search */}
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-3">
-          
-          {/* Project Switcher always present */}
-          <div className="relative">
-            <button 
-              onClick={() => {
-                setShowProjectDropdown(!showProjectDropdown)
-                setShowNotifications(false)
-                setShowSettings(false)
-                setShowProfile(false)
-              }}
-              className="flex items-center gap-2 text-left font-black text-white uppercase tracking-widest hover:text-primary transition-colors text-lg"
-            >
-              <span>{currentProject.name}</span>
-              <ChevronDown className="size-4 shrink-0 text-zinc-500" />
-            </button>
 
-            {showProjectDropdown && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowProjectDropdown(false)} />
-                <div className="absolute left-0 mt-2 w-72 bg-[#0b1326] border border-border/40 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-md animate-in fade-in slide-in-from-top-1 duration-100">
-                  <div className="p-3 border-b border-border/10">
-                    <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Select Workspace Context</span>
-                  </div>
-                  <div className="py-1">
-                    {projectsData.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => handleProjectSelect(p.id)}
-                        className={`w-full text-left px-4 py-3 hover:bg-white/5 flex items-center justify-between transition-colors border-l-2 ${
-                          p.id === currentProject.id ? "bg-primary/5 text-primary border-l-primary" : "text-muted-foreground border-l-transparent"
-                        }`}
-                      >
-                        <div>
-                          <p className="font-semibold text-sm text-white">{p.name}</p>
-                          <p className="text-[9px] font-mono text-zinc-500 truncate max-w-[200px]">{p.description}</p>
-                        </div>
-                        <span className="text-lg">{p.agentIcon}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+          {/* Project Switcher — only shown where a "current project" context is meaningful:
+              the Project Workspace (its own dashboard) and the Projects Explorer.
+              The global Mission Control dashboard (/) and Settings are project-agnostic. */}
+          {(pathname === "/workspace" || pathname === "/projects") && (
+            <>
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setShowProjectDropdown(!showProjectDropdown)
+                    setShowNotifications(false)
+                    setShowSettings(false)
+                    setShowProfile(false)
+                  }}
+                  className="flex items-center gap-2 text-left font-black text-white uppercase tracking-widest hover:text-primary transition-colors text-lg"
+                >
+                  <span>{currentProject.name}</span>
+                  <ChevronDown className="size-4 shrink-0 text-zinc-500" />
+                </button>
 
-          <span className="text-zinc-600 font-mono text-sm mx-1">/</span>
+                {showProjectDropdown && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowProjectDropdown(false)} />
+                    <div className="absolute left-0 mt-2 w-72 bg-[#0b1326] border border-border/40 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-md animate-in fade-in slide-in-from-top-1 duration-100">
+                      <div className="p-3 border-b border-border/10">
+                        <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Select Workspace Context</span>
+                      </div>
+                      <div className="py-1">
+                        {projectsData.map((p) => (
+                          <button
+                            key={p.id}
+                            onClick={() => handleProjectSelect(p.id)}
+                            className={`w-full text-left px-4 py-3 hover:bg-white/5 flex items-center justify-between transition-colors border-l-2 ${
+                              p.id === currentProject.id ? "bg-primary/5 text-primary border-l-primary" : "text-muted-foreground border-l-transparent"
+                            }`}
+                          >
+                            <div>
+                              <p className="font-semibold text-sm text-white">{p.name}</p>
+                              <p className="text-[9px] font-mono text-zinc-500 truncate max-w-[200px]">{p.description}</p>
+                            </div>
+                            <span className="text-lg">{p.agentIcon}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <span className="text-zinc-600 font-mono text-sm mx-1">/</span>
+            </>
+          )}
 
           {/* Page/Section Title */}
           <div className="font-semibold text-sm text-muted-foreground uppercase tracking-wider font-mono">
